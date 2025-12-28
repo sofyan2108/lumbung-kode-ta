@@ -22,6 +22,10 @@ export default function DetailSnippet() {
   const { theme } = useThemeStore()
   const { showAlert } = useAlertStore()
 
+  const handleSelectCollection = (collectionId) => {
+    navigate('/dashboard', { state: { selectedCollection: collectionId } })
+  }
+
   // --- STATE ---
   const [snippet, setSnippet] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -40,7 +44,12 @@ export default function DetailSnippet() {
     code: '',
     description: '',
     tagsInput: '',
-    is_public: false
+    is_public: false,
+    // Enhanced Metadata
+    dependencies: [],
+    dependencyInput: '',
+    usageExample: '',
+    documentationUrl: ''
   })
 
   // State Modal Konfirmasi
@@ -80,7 +89,7 @@ export default function DetailSnippet() {
 
   if (loading) {
     return (
-      <AppLayout>
+      <AppLayout onSelectCollection={handleSelectCollection}>
         <div className="h-screen flex items-center justify-center">
           <Loader2 className="animate-spin text-pastel-primary" size={40} />
         </div>
@@ -198,7 +207,12 @@ export default function DetailSnippet() {
       code: snippet.code,
       description: snippet.description || '',
       tagsInput: snippet.tags ? snippet.tags.join(', ') : '',
-      is_public: snippet.is_public
+      is_public: snippet.is_public,
+      // Enhanced Metadata
+      dependencies: snippet.dependencies || [],
+      dependencyInput: '',
+      usageExample: snippet.usage_example || '',
+      documentationUrl: snippet.documentation_url || ''
     })
     setIsEditing(true)
   }
@@ -219,7 +233,11 @@ export default function DetailSnippet() {
         code: formData.code,
         description: formData.description,
         is_public: formData.is_public,
-        tags: tagsArray
+        tags: tagsArray,
+        // Enhanced Metadata
+        dependencies: formData.dependencies.length > 0 ? formData.dependencies : null,
+        usage_example: formData.usageExample.trim() || null,
+        documentation_url: formData.documentationUrl.trim() || null
       }
 
       await updateSnippet(snippet.id, updatedData)
@@ -251,7 +269,7 @@ export default function DetailSnippet() {
   }
 
   return (
-    <AppLayout>
+    <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="max-w-5xl mx-auto pb-20">
         
         <button 
@@ -408,6 +426,88 @@ export default function DetailSnippet() {
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{snippet.description || <span className="italic text-gray-400">Tidak ada deskripsi tambahan.</span>}</p>
                 )}
             </div>
+
+            {/* Enhanced Metadata - Edit Mode Only */}
+            {isEditing && (
+              <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <span className="text-indigo-500">✨</span>
+                    Enhanced Metadata
+                </h3>
+
+                {/* Dependencies */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Dependencies</label>
+                    <div className="flex gap-2 mb-2">
+                        <input 
+                            type="text"
+                            value={formData.dependencyInput}
+                            onChange={(e) => setFormData({...formData, dependencyInput: e.target.value})}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter' && formData.dependencyInput.trim()) {
+                                    e.preventDefault()
+                                    if (!formData.dependencies.includes(formData.dependencyInput.trim())) {
+                                        setFormData({
+                                          ...formData, 
+                                          dependencies: [...formData.dependencies, formData.dependencyInput.trim()],
+                                          dependencyInput: ''
+                                        })
+                                    } else {
+                                      setFormData({...formData, dependencyInput: ''})
+                                    }
+                                }
+                            }}
+                            className="flex-1 px-4 py-2 bg-gray-50 dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400"
+                            placeholder="e.g., react, axios (Enter to add)"
+                        />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {formData.dependencies.map((dep, idx) => (
+                            <span 
+                                key={idx}
+                                className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-medium flex items-center gap-1"
+                            >
+                                📦 {dep}
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({
+                                      ...formData,
+                                      dependencies: formData.dependencies.filter((_, i) => i !== idx)
+                                    })}
+                                    className="hover:text-red-500 transition"
+                                >
+                                    <X size={12} />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Usage Example */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Usage Example</label>
+                    <textarea 
+                        rows="3"
+                        value={formData.usageExample}
+                        onChange={(e) => setFormData({...formData, usageExample: e.target.value})}
+                        className="w-full px-4 py-2 bg-gray-50 dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400 font-mono text-sm"
+                        placeholder="const value = useDebounce(input, 500)"
+                    />
+                </div>
+
+                {/* Documentation URL */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Documentation Link</label>
+                    <input 
+                        type="url"
+                        value={formData.documentationUrl}
+                        onChange={(e) => setFormData({...formData, documentationUrl: e.target.value})}
+                        className="w-full px-4 py-2 bg-gray-50 dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400"
+                        placeholder="https://react.dev/reference/..."
+                    />
+                </div>
+              </div>
+            )}
 
             <div>
                 <h3 className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tags</h3>

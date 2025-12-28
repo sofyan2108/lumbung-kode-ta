@@ -11,6 +11,10 @@ export default function UserProfile() {
   const { userId } = useParams()
   const navigate = useNavigate()
   
+  const handleSelectCollection = (collectionId) => {
+    navigate('/dashboard', { state: { selectedCollection: collectionId } })
+  }
+  
   const { currentProfile, currentProfileSnippets, fetchUserPublicProfile, fetchMyFavoriteIds, loading } = useSnippetStore()
   const { user: currentUser } = useAuthStore()
   
@@ -26,7 +30,7 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <AppLayout>
+      <AppLayout onSelectCollection={handleSelectCollection}>
         <div className="h-screen flex items-center justify-center">
           <Loader2 className="animate-spin text-pastel-primary" size={40} />
         </div>
@@ -36,7 +40,7 @@ export default function UserProfile() {
 
   if (!currentProfile && !loading) {
       return (
-        <AppLayout>
+        <AppLayout onSelectCollection={handleSelectCollection}>
             <div className="flex flex-col items-center justify-center h-[50vh]">
                 <h2 className="text-xl font-bold text-gray-600 dark:text-gray-300">Pengguna tidak ditemukan</h2>
                 <button onClick={() => navigate('/explore')} className="mt-4 text-pastel-primary hover:underline">Kembali ke Explore</button>
@@ -48,7 +52,7 @@ export default function UserProfile() {
   const isMe = currentUser?.id === userId
 
   return (
-    <AppLayout>
+    <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="max-w-6xl mx-auto pb-10">
         
         <button 

@@ -1,16 +1,27 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom'
-import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X } from 'lucide-react' // Tambah icon X
+import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X, Folder, ChevronDown, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useAlertStore } from '../store/alertStore'
-import { useState } from 'react'
+import { useCollectionStore } from '../store/collectionStore'
+import { useState, useEffect } from 'react'
+import CreateCollectionModal from './createCollectionModal'
 
 // Tambahkan props isOpen dan onClose untuk kontrol mobile
-export default function Sidebar({ onOpenModal, isOpen, onClose }) {
+export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollection }) {
   const { user, logout } = useAuthStore()
   const { showAlert } = useAlertStore()
+  const { collections, fetchCollections } = useCollectionStore()
   const navigate = useNavigate()
   
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [showCollectionModal, setShowCollectionModal] = useState(false)
+  const [collectionsExpanded, setCollectionsExpanded] = useState(true)
+
+  useEffect(() => {
+    if (user) {
+      fetchCollections()
+    }
+  }, [user, fetchCollections])
 
   const menus = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutGrid },
@@ -106,6 +117,58 @@ export default function Sidebar({ onOpenModal, isOpen, onClose }) {
               <span>{menu.name}</span>
             </NavLink>
           ))}
+
+          {/* Collections Section */}
+          {user && (
+            <>
+              <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setCollectionsExpanded(!collectionsExpanded)}
+                  className="w-full flex items-center justify-between px-4 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <span>Collections</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setShowCollectionModal(true)
+                      }}
+                      className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition"
+                      title="New Collection"
+                    >
+                      <PlusCircle size={14} />
+                    </button>
+                    {collectionsExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                  </div>
+                </button>
+
+                {collectionsExpanded && (
+                  <div className="space-y-1 mt-2 max-h-64 overflow-y-auto custom-scrollbar">
+                    {collections.length === 0 ? (
+                      <p className="px-4 py-2 text-xs text-gray-400 dark:text-gray-500 text-center">
+                        Belum ada collection
+                      </p>
+                    ) : (
+                      collections.map(collection => (
+                        <button
+                          key={collection.id}
+                          onClick={() => {
+                            onSelectCollection?.(collection.id)
+                            if (window.innerWidth < 1024) onClose()
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-all"
+                        >
+                          <span>{collection.icon}</span>
+                          <span className="flex-1 text-left truncate font-medium">{collection.name}</span>
+                          <span className="text-xs text-gray-400">{collection.snippet_count || 0}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Footer User Profile */}
@@ -164,6 +227,12 @@ export default function Sidebar({ onOpenModal, isOpen, onClose }) {
           </div>
         </div>
       )}
+
+      {/* Collection Modal */}
+      <CreateCollectionModal
+        isOpen={showCollectionModal}
+        onClose={() => setShowCollectionModal(false)}
+      />
     </>
   )
 }

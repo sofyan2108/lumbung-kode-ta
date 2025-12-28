@@ -28,6 +28,12 @@ export default function AddSnippetModal({ isOpen, onClose }) {
   const [description, setDescription] = useState('')
   const [tagsInput, setTagsInput] = useState('')
   const [isPublic, setIsPublic] = useState(false)
+  
+  // Enhanced Metadata
+  const [dependencies, setDependencies] = useState([])
+  const [dependencyInput, setDependencyInput] = useState('')
+  const [usageExample, setUsageExample] = useState('')
+  const [documentationUrl, setDocumentationUrl] = useState('')
 
   // --- KONSTANTA VALIDASI ---
   const MAX_TITLE_LENGTH = 100
@@ -51,6 +57,14 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         setLanguage(result.language)
         setDescription(result.description)
         setTagsInput(result.tags.join(', '))
+        
+        // Enhanced metadata from AI
+        if (result.dependencies && result.dependencies.length > 0) {
+            setDependencies(result.dependencies)
+        }
+        if (result.usage_example) {
+            setUsageExample(result.usage_example)
+        }
         
         showAlert('success', 'AI Selesai!', 'Judul, bahasa, dan tag telah diisi otomatis.')
     } catch (error) {
@@ -115,11 +129,15 @@ export default function AddSnippetModal({ isOpen, onClose }) {
 
       await addSnippet({
         title: title.trim(),
-        language,
-        code,
+        language: language.toLowerCase(),
+        code: code.trim(),
         description: description.trim(),
+        tags: tagsArray,
         is_public: isPublic,
-        tags: tagsArray
+        // Enhanced Metadata
+        dependencies: dependencies.length > 0 ? dependencies : null,
+        usage_example: usageExample.trim() || null,
+        documentation_url: documentationUrl.trim() || null
       })
       
       // Reset Form
@@ -129,6 +147,11 @@ export default function AddSnippetModal({ isOpen, onClose }) {
       setTagsInput('')
       setLanguage('')
       setIsPublic(false)
+      // Reset metadata
+      setDependencies([])
+      setDependencyInput('')
+      setUsageExample('')
+      setDocumentationUrl('')
       
       onClose()
       showAlert('success', 'Tersimpan!', 'Snippet baru berhasil ditambahkan.')
@@ -299,6 +322,87 @@ export default function AddSnippetModal({ isOpen, onClose }) {
                     placeholder="Penjelasan singkat..."
                     maxLength={MAX_DESC_LENGTH}
                 />
+            </div>
+
+            {/* Enhanced Metadata Section */}
+            <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Sparkles size={16} className="text-indigo-500" />
+                    Enhanced Metadata (Optional)
+                </h3>
+
+                {/* Dependencies */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                        Dependencies (Library yang dipakai)
+                    </label>
+                    <div className="flex gap-2 mb-2">
+                        <input 
+                            type="text"
+                            value={dependencyInput}
+                            onChange={(e) => setDependencyInput(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter' && dependencyInput.trim()) {
+                                    e.preventDefault()
+                                    if (!dependencies.includes(dependencyInput.trim())) {
+                                        setDependencies([...dependencies, dependencyInput.trim()])
+                                    }
+                                    setDependencyInput('')
+                                }
+                            }}
+                            className="flex-1 px-4 py-2 bg-white dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400"
+                            placeholder="e.g., react, axios, lodash (Enter to add)"
+                        />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {dependencies.map((dep, idx) => (
+                            <span 
+                                key={idx}
+                                className="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-medium flex items-center gap-1"
+                            >
+                                📦 {dep}
+                                <button
+                                    type="button"
+                                    onClick={() => setDependencies(dependencies.filter((_, i) => i !== idx))}
+                                    className="hover:text-red-500 transition"
+                                >
+                                    <X size={12} />
+                                </button>
+                            </span>
+                        ))}
+                        {dependencies.length === 0 && (
+                            <span className="text-xs text-gray-400 italic">AI akan detect otomatis saat analyze code</span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Usage Example */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                        Usage Example (Cara pakai)
+                    </label>
+                    <textarea 
+                        rows="4"
+                        value={usageExample}
+                        onChange={(e) => setUsageExample(e.target.value)}
+                        className="w-full px-4 py-2 bg-white dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400 font-mono text-sm"
+                        placeholder="const data = useDebounce(value, 500)"
+                    />
+                </div>
+
+                {/* Documentation URL */}
+                <div>
+                    <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1">
+                        Documentation Link
+                    </label>
+                    <input 
+                        type="url"
+                        value={documentationUrl}
+                        onChange={(e) => setDocumentationUrl(e.target.value)}
+                        className="w-full px-4 py-2 bg-white dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500/50 dark:text-white focus:outline-none transition placeholder-gray-400"
+                        placeholder="https://react.dev/reference/..."
+                    />
+                </div>
             </div>
 
         </div>

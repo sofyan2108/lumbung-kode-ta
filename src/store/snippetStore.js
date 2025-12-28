@@ -276,6 +276,42 @@ export const useSnippetStore = create((set, get) => ({
     }
   },
 
+  // Full-text search in code content
+  searchSnippetsFullText: async (query, userId = null) => {
+    set({ loading: true })
+    
+    try {
+      let queryBuilder = supabase
+        .from('snippets')
+        .select('*, profiles(full_name, avatar_url)')
+      
+      // If userId provided, filter by user (for dashboard)
+      if (userId) {
+        queryBuilder = queryBuilder.eq('user_id', userId)
+      } else {
+        // For explore, only public snippets
+        queryBuilder = queryBuilder.eq('is_public', true)
+      }
+      
+      // Apply full-text search
+      const { data, error } = await queryBuilder
+        .textSearch('search_vector', query, {
+          type: 'websearch',
+          config: 'english'
+        })
+        .order('created_at', { ascending: false })
+      
+      if (error) throw error
+      
+      set({ loading: false })
+      return data || []
+    } catch (error) {
+      console.error('Full-text search error:', error)
+      set({ loading: false })
+      return []
+    }
+  },
+
   // Biarkan fetchFavorites untuk backward compatibility jika ada komponen lama yang pakai
   fetchFavorites: async () => {}, 
 }))

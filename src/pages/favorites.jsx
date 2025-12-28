@@ -1,11 +1,17 @@
 import AppLayout from '../components/appLayout'
 import SnippetCard from '../components/snippetCard'
 import { useSnippetStore } from '../store/snippetStore'
+import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Loader2, Heart } from 'lucide-react'
 
 export default function Favorites() {
   const { favoriteSnippets, fetchFavorites, fetchMyFavoriteIds, loading } = useSnippetStore()
+  const navigate = useNavigate()
+
+  const handleSelectCollection = (collectionId) => {
+    navigate('/dashboard', { state: { selectedCollection: collectionId } })
+  }
 
   useEffect(() => {
     fetchFavorites()
@@ -13,7 +19,7 @@ export default function Favorites() {
   }, [])
 
   return (
-    <AppLayout>
+    <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-pastel-text dark:text-white mb-2 flex items-center gap-3">
             <Heart className="text-red-500 fill-red-500" /> 

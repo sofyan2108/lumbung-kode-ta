@@ -3,26 +3,38 @@ import SnippetCard from '../components/snippetCard'
 import AddSnippetModal from '../components/addSnippetModal'
 import { useAuthStore } from '../store/authStore'
 import { useSnippetStore } from '../store/snippetStore'
+import { useCollectionStore } from '../store/collectionStore'
 import { useAlertStore } from '../store/alertStore'
+import CreateCollectionModal from '../components/createCollectionModal'
 import { useEffect, useState, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Loader2, PlusCircle, Search, Filter, ArrowUpDown, Globe } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Loader2, PlusCircle, Search, Filter, ArrowUpDown, Globe, Pencil, Trash2 } from 'lucide-react'
 import { popularLanguages } from '../utils/languageConfig'
 import { useShortcut } from '../hooks/useShortcut'
 
 export default function Dashboard() {
   const { user } = useAuthStore()
-  const { snippets, fetchSnippets, fetchMyFavoriteIds, loading } = useSnippetStore()
+  const { snippets, fetchSnippets, fetchMyFavoriteIds, searchSnippetsFullText, loading } = useSnippetStore()
   const { showAlert } = useAlertStore()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption] = useState('newest')
   const [selectedLanguage, setSelectedLanguage] = useState('all')
   const [filterVisibility, setFilterVisibility] = useState('all')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [selectedCollection, setSelectedCollection] = useState(null)
+  const [collectionSnippets, setCollectionSnippets] = useState([])
+  const [allSearchResults, setAllSearchResults] = useState(null)
+  const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const searchInputRef = useRef(null)
+  const { getCollectionSnippets, collections, deleteCollection } = useCollectionStore()
+
+  // Get active collection details
+  const activeCollection = collections.find(c => c.id === selectedCollection)
 
   // LOGIC TOMBOL ADD (CHECK USER)
   const handleAddClick = () => {
@@ -60,14 +72,58 @@ export default function Dashboard() {
     }
   }, [user])
 
+  // Handle collection selection
+  useEffect(() => {
+    const loadCollectionSnippets = async () => {
+      if (selectedCollection) {
+        const snippets = await getCollectionSnippets(selectedCollection)
+        setCollectionSnippets(snippets)
+      } else {
+        setCollectionSnippets([])
+      }
+    }
+    loadCollectionSnippets()
+  }, [selectedCollection, getCollectionSnippets])
+
+  // Handle collection from URL state (when navigated from Explore)
+  useEffect(() => {
+    if (location.state?.selectedCollection) {
+      setSelectedCollection(location.state.selectedCollection)
+      // Clear state to prevent re-triggering
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location.state, navigate, location.pathname])
+
+  // Unified search: search in both title/tags AND code content
+  useEffect(() => {
+    const performSearch = async () => {
+      if (searchQuery.trim().length > 2) {
+        // Search in code content using full-text search
+        const codeResults = await searchSnippetsFullText(searchQuery, user?.id)
+        setAllSearchResults(codeResults)
+      } else {
+        setAllSearchResults(null)
+      }
+    }
+    
+    const debounce = setTimeout(performSearch, 500)
+    return () => clearTimeout(debounce)
+  }, [searchQuery, user, searchSnippetsFullText])
+
   const filteredSnippets = useMemo(() => {
-    let result = snippets.filter(s => s.user_id === user?.id)
+    // Base snippets: use search results if searching, otherwise use collection or all
+    let result = allSearchResults && searchQuery.trim().length > 2
+      ? allSearchResults
+      : selectedCollection 
+        ? collectionSnippets 
+        : snippets.filter(s => s.user_id === user?.id)
 
     if (selectedLanguage !== 'all') {
       result = result.filter(s => s.language.toLowerCase() === selectedLanguage.toLowerCase())
     }
 
-    if (searchQuery) {
+    // Additional title/tag filter (works even with code search results)
+    if (searchQuery.trim() && searchQuery.trim().length <= 2) {
       const q = searchQuery.toLowerCase()
       result = result.filter(s => 
         s.title.toLowerCase().includes(q) || 
@@ -89,7 +145,7 @@ export default function Dashboard() {
     })
 
     return result
-  }, [snippets, user, searchQuery, sortOption, selectedLanguage, filterVisibility])
+  }, [snippets, user, searchQuery, sortOption, selectedLanguage, filterVisibility, selectedCollection, collectionSnippets])
 
   const availableLanguages = useMemo(() => {
     const langs = snippets.filter(s => s.user_id === user?.id).map(s => s.language)
@@ -106,37 +162,96 @@ export default function Dashboard() {
     return ['all', ...result]
   }, [snippets, user])
 
+  const handleSelectCollection = (collectionId) => {
+    setSelectedCollection(collectionId)
+  }
+
+  const handleDeleteCollection = async () => {
+    if (!selectedCollection) return
+    
+    try {
+      await deleteCollection(selectedCollection)
+      setSelectedCollection(null)
+      setShowDeleteConfirm(false)
+      showAlert('success', 'Berhasil!', 'Collection berhasil dihapus')
+    } catch (error) {
+      showAlert('error', 'Gagal', 'Gagal menghapus collection')
+    }
+  }
+
   return (
-    <AppLayout>
+    <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-pastel-text dark:text-white mb-2">
-            Dashboard
+          {selectedCollection ? (
+            <div className="flex items-center gap-3">
+              <span>Dashboard</span>
+              <span className="text-gray-400 dark:text-gray-500">/</span>
+              <div 
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xl"
+                style={{
+                  backgroundColor: activeCollection?.color + '20',
+                  borderLeft: `4px solid ${activeCollection?.color}`
+                }}
+              >
+                <span className="text-2xl">{activeCollection?.icon}</span>
+                <span>{activeCollection?.name || 'Collection'}</span>
+                
+                {/* Quick Actions */}
+                <div className="flex items-center gap-1 ml-2">
+                  <button
+                    onClick={() => setShowEditCollectionModal(true)}
+                    className="p-1.5 hover:bg-white/50 dark:hover:bg-black/20 rounded-lg transition"
+                    title="Edit Collection"
+                  >
+                    <Pencil size={16} className="text-gray-600 dark:text-gray-300" />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                    title="Delete Collection"
+                  >
+                    <Trash2 size={16} className="text-red-500" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            'Dashboard'
+          )}
         </h1>
         <p className="text-pastel-muted dark:text-gray-400">
-            Kelola dan temukan kodemu dengan mudah.
+          {selectedCollection 
+            ? `${activeCollection?.snippet_count || 0} snippet dalam collection ini` 
+            : 'Kelola dan temukan kodemu dengan mudah.'}
         </p>
       </div>
 
-      <div className="mb-8 flex flex-col xl:flex-row gap-4 justify-between items-center">
-        
-        <div className="relative w-full xl:w-1/3 group">
+      {/* Search Bar - Full Width */}
+      <div className="mb-4">
+        <div className="relative group">
             <Search className="absolute left-4 top-3 text-gray-400 group-focus-within:text-pastel-primary transition" size={18} />
             <input 
                 ref={searchInputRef}
                 type="text" 
-                placeholder="Cari judul atau tag... (Ctrl + K)" 
+                placeholder="Cari snippet... (judul, tag, atau kode)" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-white dark:bg-pastel-dark-surface rounded-2xl shadow-sm focus:shadow-md focus:ring-0 text-gray-700 dark:text-white placeholder-gray-400 transition-all outline-none"
             />
             <div className="absolute right-4 top-3.5 hidden md:flex items-center gap-1 pointer-events-none">
-                <kbd className="hidden sm:inline-block border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-300 rounded px-1.5 py-0.5 text-[10px] font-sans font-bold shadow-sm">Ctrl + K</kbd>
+                {searchQuery.trim().length > 2 ? (
+                  <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-medium px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/20 rounded">Searching...</span>
+                ) : (
+                  <kbd className="hidden sm:inline-block border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-400 dark:text-gray-300 rounded px-1.5 py-0.5 text-[10px] font-sans font-bold shadow-sm">Ctrl + K</kbd>
+                )}
             </div>
         </div>
+      </div>
 
-        <div className="flex flex-wrap gap-3 w-full xl:w-auto justify-end">
-            
-            <div className="relative min-w-[140px] flex-1 xl:flex-none group">
+      {/* Filters - Below Search */}
+      <div className="mb-8 flex flex-wrap gap-3">
+            <div className="relative min-w-[140px] flex-1 sm:flex-none group">
                 <Filter className="absolute left-3 top-3 text-gray-400 group-hover:text-pastel-primary transition" size={16} />
                 <select 
                     value={selectedLanguage}
@@ -150,7 +265,7 @@ export default function Dashboard() {
                 </select>
             </div>
 
-            <div className="relative min-w-[140px] flex-1 xl:flex-none group">
+            <div className="relative min-w-[140px] flex-1 sm:flex-none group">
                 <Globe className="absolute left-3 top-3 text-gray-400 group-hover:text-pastel-primary transition" size={16} />
                 <select 
                     value={filterVisibility}
@@ -166,7 +281,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="relative min-w-[160px] flex-1 xl:flex-none group">
+            <div className="relative min-w-[160px] flex-1 sm:flex-none group">
                 <ArrowUpDown className="absolute left-3 top-3 text-gray-400 group-hover:text-pastel-primary transition" size={16} />
                 <select 
                     value={sortOption}
@@ -178,7 +293,6 @@ export default function Dashboard() {
                     <option value="popular">Populer (Copy)</option>
                 </select>
             </div>
-        </div>
       </div>
 
       {loading ? (
@@ -208,10 +322,49 @@ export default function Dashboard() {
         </div>
       )}
 
-      <AddSnippetModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
-      />
+        <AddSnippetModal 
+          isOpen={isAddModalOpen} 
+          onClose={() => setIsAddModalOpen(false)} 
+        />
+
+        {/* Edit Collection Modal */}
+        <CreateCollectionModal
+          isOpen={showEditCollectionModal}
+          onClose={() => setShowEditCollectionModal(false)}
+          editMode={true}
+          collectionToEdit={activeCollection}
+        />
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-pastel-dark-surface w-full max-w-sm rounded-2xl shadow-2xl border border-gray-100 dark:border-pastel-dark-border p-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center text-red-500 mb-4">
+                  <Trash2 size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Delete Collection?</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+                  Yakin ingin menghapus collection <strong>"{activeCollection?.name}"</strong>? Snippet tidak akan terhapus.
+                </p>
+                <div className="flex gap-3 w-full">
+                  <button 
+                    onClick={() => setShowDeleteConfirm(false)} 
+                    className="flex-1 py-2.5 rounded-xl font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                  >
+                    Batal
+                  </button>
+                  <button 
+                    onClick={handleDeleteCollection} 
+                    className="flex-1 py-2.5 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/30 transition flex items-center justify-center gap-2"
+                  >
+                    Ya, Hapus
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
     </AppLayout>
   )
 }

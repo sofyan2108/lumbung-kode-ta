@@ -1,4 +1,4 @@
-import { Copy, Tag, Check, Globe, Lock, User as UserIcon, Heart, GitFork, X, Download } from 'lucide-react'
+import { Copy, Tag, Check, Globe, Lock, User as UserIcon, Heart, GitFork, X, Download, FolderPlus } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CodeMirror from '@uiw/react-codemirror'
@@ -9,12 +9,14 @@ import { useThemeStore } from '../store/themeStore'
 import { useAuthStore } from '../store/authStore'
 import { useAlertStore } from '../store/alertStore'
 import { getLanguageExtension, getLangColor, getFileExtension } from '../utils/languageConfig'
+import AddToCollectionModal from './addToCollectionModal'
 
 export default function SnippetCard({ snippet }) {
   const [isCopied, setIsCopied] = useState(false)
   const [forkLoading, setForkLoading] = useState(false)
   const [showForkConfirm, setShowForkConfirm] = useState(false)
   const [showDownloadConfirm, setShowDownloadConfirm] = useState(false)
+  const [showCollectionModal, setShowCollectionModal] = useState(false)
   
   const { incrementCopy, toggleLike, forkSnippet, favoriteIds } = useSnippetStore()
   const { showAlert } = useAlertStore()
@@ -169,6 +171,16 @@ export default function SnippetCard({ snippet }) {
                     <GitFork size={18} className={forkLoading ? "animate-spin" : ""} />
                 </button>
             )}
+
+            {isOwner && (
+                <button 
+                    onClick={() => setShowCollectionModal(true)}
+                    className="p-2 text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all duration-300"
+                    title="Tambah ke Collection"
+                >
+                    <FolderPlus size={18} />
+                </button>
+            )}
           </div>
         </div>
 
@@ -308,6 +320,13 @@ export default function SnippetCard({ snippet }) {
             </div>
         </div>
       )}
+
+      {/* MODAL ADD TO COLLECTION */}
+      <AddToCollectionModal
+        isOpen={showCollectionModal}
+        onClose={() => setShowCollectionModal(false)}
+        snippetId={snippet.id}
+      />
     </>
   )
 }

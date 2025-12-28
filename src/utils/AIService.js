@@ -49,10 +49,16 @@ export const analyzeCodeWithAI = async (codeSnippet) => {
         2. "language": The programming language (lowercase, e.g., "javascript", "python", "html", "css").
         3. "description": A concise explanation of what the code does (max 200 chars, in Indonesian language).
         4. "tags": An array of 3-5 keywords relevant to the code (lowercase).
+        5. "dependencies": An array of library/package names used in the code (e.g., ["react", "axios", "pandas"]).
+           Look for import statements, require calls, using statements, or pip installs.
+           If no external dependencies found, return empty array [].
+        6. "usage_example": A short code example showing how to use this snippet (max 150 chars).
+           Format it as actual code. If not applicable, return empty string "".
 
         Code to analyze:
         ${codeSnippet}
       `;
+
 
       const maxRetries = 3;
       let attempt = 0;

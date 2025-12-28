@@ -2,11 +2,20 @@ import AppLayout from '../components/appLayout'
 import SnippetCard from '../components/snippetCard'
 import { useSnippetStore } from '../store/snippetStore'
 import { useEffect, useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Loader2, Globe, Search } from 'lucide-react'
 
 export default function Explore() {
-  const { exploreSnippets, fetchExploreSnippets, fetchMyFavoriteIds, loading } = useSnippetStore()
+  const { exploreSnippets, fetchExploreSnippets, fetchMyFavoriteIds, searchSnippetsFullText, loading } = useSnippetStore()
   const [searchQuery, setSearchQuery] = useState('')
+  const [allSearchResults, setAllSearchResults] = useState(null)
+  const navigate = useNavigate()
+
+  // Handler for collection click: navigate to Dashboard
+  const handleSelectCollection = (collectionId) => {
+    // Navigate to dashboard with collection selected (we'll use URL state)
+    navigate('/dashboard', { state: { selectedCollection: collectionId } })
+  }
 
   // Ambil data public saat halaman dibuka
   useEffect(() => {
@@ -14,20 +23,44 @@ export default function Explore() {
     fetchMyFavoriteIds() // Load status hati
   }, [])
 
-  // Filter Search Sederhana
-  const filteredSnippets = useMemo(() => {
-    if (!searchQuery) return exploreSnippets
+  // Unified search: search in both title/tags AND code content (same as Dashboard)
+  useEffect(() => {
+    const performSearch = async () => {
+      if (searchQuery.trim().length > 2) {
+        // Search in code content using full-text search (for public snippets only)
+        const codeResults = await searchSnippetsFullText(searchQuery, null) // null = public only
+        setAllSearchResults(codeResults)
+      } else {
+        setAllSearchResults(null)
+      }
+    }
     
-    const q = searchQuery.toLowerCase()
-    return exploreSnippets.filter(s => 
-       s.title.toLowerCase().includes(q) || 
-       (s.tags && s.tags.some(t => t.toLowerCase().includes(q))) ||
-       s.language.toLowerCase().includes(q)
-    )
-  }, [exploreSnippets, searchQuery])
+    const debounce = setTimeout(performSearch, 500)
+    return () => clearTimeout(debounce)
+  }, [searchQuery, searchSnippetsFullText])
+
+  // Filter Search
+  const filteredSnippets = useMemo(() => {
+    // Use search results if searching (query >= 3 chars), otherwise use all explore snippets
+    let result = allSearchResults && searchQuery.trim().length > 2
+      ? allSearchResults
+      : exploreSnippets
+    
+    // Additional title/tag filter for short queries (1-2 chars)
+    if (searchQuery.trim() && searchQuery.trim().length <= 2) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter(s => 
+        s.title.toLowerCase().includes(q) || 
+        (s.tags && s.tags.some(t => t.toLowerCase().includes(q))) ||
+        s.language.toLowerCase().includes(q)
+      )
+    }
+    
+    return result
+  }, [exploreSnippets, searchQuery, allSearchResults])
 
   return (
-    <AppLayout>
+    <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="mb-8 text-center max-w-2xl mx-auto">
         <div className="inline-flex items-center justify-center p-3 bg-pastel-primary/10 text-pastel-primary rounded-full mb-4">
             <Globe size={24} />
@@ -47,11 +80,16 @@ export default function Explore() {
             <Search className="absolute left-5 top-4 text-gray-400" size={20} />
             <input 
                 type="text" 
-                placeholder="Cari Python, React, atau algoritma..." 
+                placeholder="Cari snippet... (judul, tag, atau kode)" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-6 py-4 bg-white dark:bg-pastel-dark-surface rounded-full shadow-lg border border-gray-100 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-pastel-primary/50 text-gray-700 dark:text-white placeholder-gray-400 transition-all"
             />
+            {searchQuery.trim().length > 2 && (
+              <div className="absolute right-5 top-4">
+                <span className="text-xs text-indigo-500 dark:text-indigo-400 font-medium px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 rounded">Searching...</span>
+              </div>
+            )}
          </div>
       </div>
 

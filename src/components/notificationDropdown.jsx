@@ -83,7 +83,7 @@ export default function NotificationDropdown({ isOpen, onClose }) {
                         !notif.is_read ? 'bg-pink-50/30 dark:bg-pink-900/10' : ''
                     }`}
                 >
-                    <div className="mt-1 flex-shrink-0">
+                    <div className="mt-1 flex-shrink-0 relative">
                         {notif.actor?.avatar_url ? (
                             <img src={notif.actor.avatar_url} className="w-9 h-9 rounded-full object-cover border border-gray-200" alt="avatar" />
                         ) : (
@@ -91,7 +91,7 @@ export default function NotificationDropdown({ isOpen, onClose }) {
                                 {notif.actor?.full_name?.charAt(0) || 'U'}
                             </div>
                         )}
-                        <div className="absolute -mt-3 -ml-1 w-5 h-5 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div className="absolute top-5 -left-1 w-5 h-5 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700">
                             {getIcon(notif.type)}
                         </div>
                     </div>

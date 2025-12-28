@@ -4,7 +4,7 @@ import TopBar from './topBar'
 import AddSnippetModal from './addSnippetModal'
 import GlobalAlert from './globalAlert'
 
-export default function AppLayout({ children }) {
+export default function AppLayout({ children, onSelectCollection }) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   
   // State untuk Sidebar (Default Open di Desktop, Closed di Mobile)
@@ -29,6 +29,7 @@ export default function AppLayout({ children }) {
         onOpenModal={() => setIsModalOpen(true)} 
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        onSelectCollection={onSelectCollection}
       />
       
       {/* MAIN CONTENT */}
