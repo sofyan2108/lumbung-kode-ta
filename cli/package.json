@@ -1,0 +1,31 @@
+{
+  "name": "codehaven-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for CodeHaven - Modern Snippet Manager",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "codehaven": "./bin/codehaven.js"
+  },
+  "scripts": {
+    "start": "node bin/codehaven.js",
+    "link": "npm link"
+  },
+  "keywords": [
+    "cli",
+    "snippet",
+    "code",
+    "manager",
+    "codehaven"
+  ],
+  "author": "CodeHaven Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.86.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "conf": "^13.0.1",
+    "inquirer": "^9.3.7",
+    "ora": "^8.1.1"
+  }
+}
