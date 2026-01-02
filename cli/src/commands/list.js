@@ -63,10 +63,11 @@ export async function list(options) {
     
     console.log(chalk.gray('─'.repeat(80)))
     console.log(chalk.gray(`\nShowing ${snippets.length} snippets. Use --limit to see more.`))
-    console.log(chalk.gray('View snippet: codehaven get <id>'))
+    console.log(chalk.gray('View snippet: lumbung get <id>'))
     
   } catch (error) {
     spinner.fail(chalk.red('Failed to fetch snippets'))
     console.log(chalk.red(`Error: ${error.message}`))
   }
 }
+

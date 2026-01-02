@@ -42,7 +42,7 @@ const banner = `
 program
   .name('lumbung')
   .description('CLI tool for Lumbung Kode - Gudang Snippet Kode Modern')
-  .version('1.0.0')
+    .version('1.0.4')
   .hook('preAction', (thisCommand) => {
     // Only show banner for main help
     if (thisCommand.args.length === 0 && !process.argv.slice(2).length) {
@@ -116,3 +116,6 @@ program
 
 // Parse and execute
 program.parse()
+
+
+

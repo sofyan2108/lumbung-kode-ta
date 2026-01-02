@@ -68,7 +68,7 @@ export async function login() {
     spinner.fail(chalk.red('Login failed'))
     console.log(chalk.red(`Error: ${error.message}`))
     console.log(chalk.gray('\nMake sure your email and password are correct.'))
-    console.log(chalk.gray('If you don\'t have an account, register at https://Lumbung Kode.app'))
+    console.log(chalk.gray('If you don\'t have an account, register at https://lumbungkode.netlify.app'))
   }
 }
 
@@ -92,4 +92,5 @@ export async function logout() {
     console.log(chalk.green('✓ Logged out successfully.'))
   }
 }
+
 

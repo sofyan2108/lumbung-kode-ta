@@ -1,6 +1,6 @@
 {
   "name": "lumbung-cli",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "CLI tool for Lumbung Kode - Gudang Snippet Kode Modern",
   "type": "module",
   "main": "src/index.js",
@@ -8,7 +8,7 @@
     "lumbung": "./bin/lumbung.js"
   },
   "scripts": {
-    "start": "node bin/codehaven.js",
+    "start": "node bin/lumbung.js",
     "link": "npm link"
   },
   "keywords": [
@@ -16,10 +16,17 @@
     "snippet",
     "code",
     "manager",
-    "codehaven"
+    "lumbung",
+    "lumbung-kode",
+    "snippet-manager"
   ],
-  "author": "CodeHaven Team",
+  "author": "Sofyan (sofyan2108)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sofyan2108/lumbung-kode-ta.git"
+  },
+  "homepage": "https://github.com/sofyan2108/lumbung-kode-ta#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",
     "chalk": "^5.3.0",

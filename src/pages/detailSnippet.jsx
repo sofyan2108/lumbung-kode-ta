@@ -354,6 +354,8 @@ export default function DetailSnippet() {
               <>
                 <button type="button" onClick={handleShare} className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition hover:scale-105 active:scale-95 shadow-sm" title="Bagikan Link"><Share2 size={20} /></button>
                 
+                <button type="button" onClick={handleDownload} className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition hover:scale-105 active:scale-95 shadow-sm" title="Download Snippet"><Download size={20} /></button>
+                
                 <button 
                     type="button"
                     onClick={handleLike}
@@ -563,6 +565,23 @@ export default function DetailSnippet() {
                 <div className="flex gap-3">
                     <button onClick={() => setShowForkConfirm(false)} className="flex-1 py-3 rounded-xl font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition">Batal</button>
                     <button onClick={confirmFork} className="flex-1 py-3 rounded-xl font-bold text-white bg-purple-500 hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition flex items-center justify-center gap-2 transform active:scale-95"><GitFork size={18} /> Ya, Fork</button>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* MODAL KONFIRMASI DOWNLOAD */}
+      {showDownloadConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-pastel-dark-surface w-full max-w-sm rounded-2xl shadow-2xl border border-gray-100 dark:border-pastel-dark-border p-6 transform transition-all animate-in zoom-in-95 duration-200">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-2"><Download className="text-blue-500" size={24} /> Download Snippet?</h3>
+                    <button onClick={() => setShowDownloadConfirm(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"><X size={20} /></button>
+                </div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">Anda akan mengunduh snippet <strong>"{snippet.title}"</strong> sebagai file.</p>
+                <div className="flex gap-3">
+                    <button onClick={() => setShowDownloadConfirm(false)} className="flex-1 py-3 rounded-xl font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition">Batal</button>
+                    <button onClick={confirmDownload} className="flex-1 py-3 rounded-xl font-bold text-white bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/30 transition flex items-center justify-center gap-2 transform active:scale-95"><Download size={18} /> Ya, Unduh</button>
                 </div>
             </div>
         </div>

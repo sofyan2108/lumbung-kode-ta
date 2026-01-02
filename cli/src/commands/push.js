@@ -73,6 +73,11 @@ export async function push(file, options) {
     const tags = options.tags ? options.tags.split(',').map(t => t.trim()) : []
     const isPublic = options.public || false
     
+    // Enhanced metadata
+    const dependencies = options.dependencies ? JSON.parse(options.dependencies) : []
+    const usageExample = options.usageExample || options.usage || ''
+    const documentationUrl = options.documentationUrl || options.docs || ''
+    
     spinner.text = 'Uploading snippet...'
     
     // Create snippet
@@ -82,7 +87,10 @@ export async function push(file, options) {
       code,
       description,
       tags,
-      is_public: isPublic
+      is_public: isPublic,
+      dependencies,
+      usage_example: usageExample,
+      documentation_url: documentationUrl
     })
     
     spinner.succeed(chalk.green('Snippet uploaded successfully!'))
@@ -101,10 +109,11 @@ export async function push(file, options) {
     }
     console.log(chalk.gray('─'.repeat(50)))
     console.log('')
-    console.log(chalk.gray(`View at: https://codehaven.app/snippet/${snippet.id}`))
+    console.log(chalk.gray(`View at: https://lumbungkode.netlify.app/snippet/${snippet.id}`))
     
   } catch (error) {
     spinner.fail(chalk.red('Failed to upload snippet'))
     console.log(chalk.red(`Error: ${error.message}`))
   }
 }
+

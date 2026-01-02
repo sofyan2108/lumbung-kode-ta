@@ -1,247 +1,351 @@
-# 🖥️ lumbung CLI
+# 🚀 Lumbung CLI - Command Line Interface
 
-Command Line Interface untuk **lumbung - Modern Snippet Manager**.
-
-Upload, cari, dan kelola snippet kode langsung dari terminal Anda.
+Lumbung CLI adalah **terminal tool** untuk mengelola snippet kode Anda langsung dari command line. Upload, download, dan cari snippet tanpa perlu buka browser!
 
 ---
 
-## 📦 Instalasi
+## 📋 **Daftar Isi**
 
-### Prasyarat
-- Node.js versi 18 atau lebih baru
-- Akun lumbung (daftar di https://lumbung.app)
+1. [Instalasi](#instalasi)
+2. [Quick Start](#quick-start)
+3. [Semua Command](#semua-command)
+4. [Contoh Penggunaan](#contoh-penggunaan)
+5. [Tips & Tricks](#tips--tricks)
+6. [Troubleshooting](#troubleshooting)
 
-### Install dari Source
+---
 
+## 📦 **Instalasi**
+
+### **Opsi 1: Install dari NPM (Recommended)**
 ```bash
-# Clone repository
-cd snippet-manager/cli
+npm install -g lumbung-cli
+```
 
-# Install dependencies
+### **Opsi 2: Install dari Source**
+```bash
+git clone https://github.com/sofyan2108/lumbung-kode-ta.git
+cd lumbung-kode-ta/cli
 npm install
-
-# Link secara global
 npm link
+```
 
-# Sekarang bisa digunakan dari mana saja
-lumbung --help
+### **Verifikasi Instalasi:**
+```bash
+lumbung --version
 ```
 
 ---
 
-## 🚀 Panduan Penggunaan
+## ⚡ **Quick Start**
 
-### 1. Login ke Akun Anda
+### **1. Login ke Akun Anda**
+```bash
+lumbung login
+```
+Masukkan email & password yang sama dengan akun web app.
 
-Sebelum menggunakan CLI, login terlebih dahulu:
+### **2. Upload Snippet Pertama**
+```bash
+lumbung push myfile.js --public
+```
+
+### **3. Lihat Semua Snippet Anda**
+```bash
+lumbung list
+```
+
+### **4. Download Snippet**
+```bash
+lumbung get <snippet-id> --output downloaded.js
+```
+
+**Selesai!** 🎉
+
+---
+
+## 📖 **Semua Command**
+
+### **🔐 Authentication**
+
+#### `lumbung login`
+Login ke akun Lumbung Kode Anda.
 
 ```bash
 lumbung login
 ```
 
-Masukkan email dan password akun lumbung Anda. Kredensial akan disimpan secara lokal.
+**Interactive prompt:**
+- Email: `user@example.com`
+- Password: `******`
 
-Cek status login:
+---
+
+#### `lumbung logout`
+Keluar dari akun.
+
+```bash
+lumbung logout
+```
+
+---
+
+#### `lumbung whoami`
+Cek status login saat ini.
+
 ```bash
 lumbung whoami
 ```
 
-### 2. Upload Snippet dari File
+---
 
+### **📤 Upload Snippet**
+
+#### `lumbung push <file>`
+Upload file sebagai snippet.
+
+**Basic Usage:**
 ```bash
-# Upload file dengan auto-detect title dan language
 lumbung push myfile.js
-
-# Upload dengan title custom
-lumbung push script.py --title "Python Script"
-
-# Upload sebagai public snippet
-lumbung push helper.ts --public
-
-# Upload dengan metadata lengkap
-lumbung push api.go \
-  --title "Go REST API" \
-  --description "Simple REST endpoint" \
-  --tags "go,rest,api" \
-  --public
 ```
 
-### 3. Lihat Daftar Snippet Anda
-
+**Dengan Metadata Lengkap:**
 ```bash
-# List semua snippet
+lumbung push component.jsx \
+  --title "React Hook: useAuth" \
+  --description "Custom authentication hook untuk login" \
+  --tags "react,hooks,auth,custom" \
+  --public \
+  --dependencies '["react","zustand"]' \
+  --usage "const { user, login } = useAuth()" \
+  --docs "https://docs.example.com/hooks"
+```
+
+**Options:**
+
+| Option | Alias | Deskripsi | Contoh |
+|--------|-------|-----------|---------|
+| `--title <text>` | `-t` | Judul snippet | `--title "My Component"` |
+| `--description <text>` | `-d` | Deskripsi snippet | `--description "Does XYZ"` |
+| `--language <lang>` | `-l` | Bahasa pemrograman | `--language javascript` |
+| `--tags <tags>` | - | Tags (pisah koma) | `--tags "react,hooks"` |
+| `--public` | - | Buat public | `--public` |
+| `--dependencies <json>` | - | Dependencies (JSON array) | `--dependencies '["react"]'` |
+| `--usage <example>` | - | Contoh penggunaan | `--usage "import ..."` |
+| `--docs <url>` | - | URL dokumentasi | `--docs "https://..."` |
+
+**Auto-Detect Language:**
+CLI otomatis detect bahasa dari file extension:
+- `.js`, `.jsx` → JavaScript
+- `.ts`, `.tsx` → TypeScript
+- `.py` → Python
+- `.java` → Java
+- dll.
+
+---
+
+### **📥 Download Snippet**
+
+#### `lumbung get <id>`
+Ambil snippet berdasarkan ID.
+
+**Tampilkan di Terminal:**
+```bash
+lumbung get 8ad61948-9251-49be-887e-c215ec3839c5
+```
+
+**Save ke File:**
+```bash
+lumbung get 8ad61948-9251-49be-887e-c215ec3839c5 --output myfile.jsx
+```
+
+**Copy ke Clipboard:**
+```bash
+lumbung get 8ad61948-9251-49be-887e-c215ec3839c5 --copy
+```
+
+**Options:**
+
+| Option | Alias | Deskripsi |
+|--------|-------|-----------|
+| `--output <file>` | `-o` | Simpan ke file |
+| `--copy` | `-c` | Copy ke clipboard |
+
+---
+
+### **📋 List Snippets**
+
+#### `lumbung list`
+Tampilkan daftar snippet Anda.
+
+**Basic:**
+```bash
 lumbung list
-
-# Filter by language
-lumbung list --language python
-
-# Limit hasil
-lumbung list --limit 5
-
-# Output sebagai JSON
-lumbung list --json
 ```
 
-### 4. Ambil Snippet by ID
-
+**Filter By Language:**
 ```bash
-# Tampilkan snippet di terminal
-lumbung get abc123
-
-# Simpan ke file
-lumbung get abc123 --output ./download/snippet.js
-
-# Copy ke clipboard
-lumbung get abc123 --copy
+lumbung list --language javascript
 ```
 
-### 5. Cari Snippet
-
+**Limit Results:**
 ```bash
-# Search dengan kata kunci
-lumbung search "react hooks"
-
-# Search hanya snippet milik sendiri
-lumbung search "useEffect" --mine
-
-# Search snippet public
-lumbung search "authentication" --public
-
-# Filter by language
-lumbung search "api" --language python
-```
-
-### 6. Logout
-
-```bash
-lumbung logout
-```
-
----
-
-## 📋 Referensi Command
-
-| Command | Deskripsi |
-|---------|-----------|
-| `lumbung login` | Login ke akun lumbung |
-| `lumbung logout` | Logout dari akun |
-| `lumbung whoami` | Tampilkan user yang sedang login |
-| `lumbung push <file>` | Upload file sebagai snippet |
-| `lumbung get <id>` | Ambil snippet berdasarkan ID |
-| `lumbung list` | Daftar snippet milik Anda |
-| `lumbung search <query>` | Cari snippet dengan full-text search |
-
----
-
-## 🎯 Options
-
-### `push` Options
-| Option | Deskripsi |
-|--------|-----------|
-| `-t, --title <title>` | Judul snippet |
-| `-l, --language <lang>` | Bahasa pemrograman |
-| `-d, --description <desc>` | Deskripsi snippet |
-| `--tags <tags>` | Tags (pisahkan dengan koma) |
-| `--public` | Jadikan snippet public |
-
-### `get` Options
-| Option | Deskripsi |
-|--------|-----------|
-| `-o, --output <file>` | Simpan ke file |
-| `-c, --copy` | Copy ke clipboard |
-
-### `list` Options
-| Option | Deskripsi |
-|--------|-----------|
-| `-l, --language <lang>` | Filter by language |
-| `-n, --limit <num>` | Limit hasil (default: 10) |
-| `--public` | Hanya snippet public |
-| `--json` | Output sebagai JSON |
-
-### `search` Options
-| Option | Deskripsi |
-|--------|-----------|
-| `-l, --language <lang>` | Filter by language |
-| `-n, --limit <num>` | Limit hasil (default: 10) |
-| `--mine` | Hanya snippet milik sendiri |
-| `--public` | Hanya snippet public |
-
----
-
-## 🌐 Bahasa yang Didukung
-
-CLI mendukung **semua bahasa pemrograman**. Auto-detect berdasarkan extension:
-
-| Extension | Language |
-|-----------|----------|
-| `.js`, `.jsx` | JavaScript |
-| `.ts`, `.tsx` | TypeScript |
-| `.py` | Python |
-| `.java` | Java |
-| `.cpp`, `.c` | C/C++ |
-| `.go` | Go |
-| `.rs` | Rust |
-| `.rb` | Ruby |
-| `.php` | PHP |
-| `.html` | HTML |
-| `.css`, `.scss` | CSS |
-| `.sql` | SQL |
-| `.md` | Markdown |
-| `.json` | JSON |
-| `.yaml`, `.yml` | YAML |
-| Dan lainnya... | Auto-detect |
-
----
-
-## 💡 Contoh Penggunaan
-
-### Workflow Harian
-
-```bash
-# Pagi: Login
-lumbung login
-
-# Simpan function baru yang dibuat
-lumbung push ./src/utils/debounce.js --tags "utility,hooks"
-
-# Cari snippet lama
-lumbung search "validation"
-
-# Ambil snippet dan gunakan
-lumbung get xyz789 --output ./temp/snippet.js
-
-# Sore: Check semua snippet hari ini
 lumbung list --limit 20
 ```
 
-### Scripting & Automation
-
+**Public Snippets Only:**
 ```bash
-# Export semua snippet sebagai JSON
-lumbung list --json > my-snippets.json
+lumbung list --public
+```
 
-# Batch upload
-for file in ./src/**/*.js; do
-  lumbung push "$file" --public
-done
+**Output as JSON:**
+```bash
+lumbung list --json
+```
+
+**Options:**
+
+| Option | Alias | Deskripsi |
+|--------|-------|-----------|
+| `--language <lang>` | `-l` | Filter by bahasa |
+| `--limit <number>` | `-n` | Max results (default: 10) |
+| `--public` | - | Hanya public snippets |
+| `--json` | - | Output format JSON |
+
+---
+
+### **🔍 Search Snippets**
+
+#### `lumbung search <query>`
+Cari snippet dengan full-text search.
+
+**Basic Search:**
+```bash
+lumbung search "react hooks"
+```
+
+**Search My Snippets:**
+```bash
+lumbung search "authentication" --mine
+```
+
+**Search Public Snippets:**
+```bash
+lumbung search "api client" --public
+```
+
+**Filter + Limit:**
+```bash
+lumbung search "useState" --language javascript --limit 5
+```
+
+**Options:**
+
+| Option | Alias | Deskripsi |
+|--------|-------|-----------|
+| `--language <lang>` | `-l` | Filter by bahasa |
+| `--limit <number>` | `-n` | Max results (default: 10) |
+| `--mine` | - | Hanya snippet saya |
+| `--public` | - | Hanya public snippets |
+
+---
+
+## 💡 **Contoh Penggunaan**
+
+### **Skenario 1: Upload Project File**
+```bash
+# Navigasi ke folder project
+cd D:/Projects/MyApp
+
+# Upload dengan metadata lengkap
+lumbung push src/components/Header.jsx \
+  --title "Responsive Header Component" \
+  --description "Header dengan dark mode support" \
+  --tags "react,component,responsive,darkmode" \
+  --dependencies '["react","lucide-react"]' \
+  --public
 ```
 
 ---
 
-## ❓ Troubleshooting
+### **Skenario 2: Cari & Download Snippet**
+```bash
+# Cari snippet authentication
+lumbung search "authentication" --public
 
-### "Not logged in"
-Jalankan `lumbung login` terlebih dahulu.
+# Download snippet yang ditemukan
+lumbung get abc123...xyz --output auth-helper.js
+```
 
-### "Snippet not found"
-Pastikan ID snippet benar. Gunakan `lumbung list` untuk melihat ID snippet Anda.
+---
 
-### "Search failed"
-Query minimal 3 karakter. Pastikan koneksi internet aktif.
+### **Skenario 3: Backup Semua Snippet**
+```bash
+# List semua snippet dalam JSON
+lumbung list --json > my-snippets.json
 
-### Credential issues
-Hapus credential dan login ulang:
+# Loop & download satu per satu (Bash/PowerShell)
+# ... (user bisa bikin script sendiri)
+```
+
+---
+
+## 🎯 **Tips & Tricks**
+
+### **1. Absolute vs Relative Path**
+```bash
+# Relative path (dari current directory)
+lumbung push ./src/utils.js
+
+# Absolute path (dari mana saja)
+lumbung push D:/Projects/app/helper.js
+```
+
+---
+
+### **2. Escape JSON String di Windows**
+Jika pakai PowerShell, escape quotes dengan backslash:
+```powershell
+lumbung push file.js --dependencies '[\"react\",\"zustand\"]'
+```
+
+Atau gunakan single quotes:
+```powershell
+lumbung push file.js --dependencies '["react","zustand"]'
+```
+
+---
+
+### **3. Kombinasi dengan Pipe**
+```bash
+# Search & save IDs to file
+lumbung search "react" --json | jq '.[] | .id' > snippet-ids.txt
+```
+
+---
+
+### **4. Alias/Shortcut**
+Tambahkan ke `.bashrc` atau `.zshrc`:
+```bash
+alias lp='lumbung push'
+alias ll='lumbung list'
+alias lg='lumbung get'
+```
+
+---
+
+## 🐛 **Troubleshooting**
+
+### **Error: "Not logged in"**
+**Solution:**
+```bash
+lumbung login
+```
+
+---
+
+### **Error: "Invalid API key"**
+Credentials expired. Login ulang:
 ```bash
 lumbung logout
 lumbung login
@@ -249,7 +353,49 @@ lumbung login
 
 ---
 
-## 📄 License
+### **Error: "File not found"**
+Pastikan path ke file benar:
+```bash
+# Cek file exists
+ls myfile.js
 
-MIT License - lumbung Team
+# Gunakan absolute path
+lumbung push D:/full/path/to/file.js
+```
 
+---
+
+### **JSON Parse Error (--dependencies)**
+Pastikan JSON valid:
+```bash
+# ❌ Salah
+--dependencies ["react"]
+
+# ✅ Benar
+--dependencies '["react","zustand"]'
+```
+
+---
+
+## 📚 **Resources**
+
+- **Web App:** https://lumbungkode.netlify.app
+- **GitHub:** https://github.com/sofyan2108/lumbung-kode-ta
+- **NPM Package:** https://npmjs.com/package/lumbung-cli
+
+---
+
+## 🆘 **Butuh Bantuan?**
+
+```bash
+# Help untuk semua command
+lumbung --help
+
+# Help untuk command tertentu
+lumbung push --help
+lumbung get --help
+```
+
+---
+
+**Made with ❤️ for Developers | Tugas Akhir Informatika 2026**

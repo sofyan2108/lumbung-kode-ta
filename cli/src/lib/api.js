@@ -6,8 +6,8 @@ import { createClient } from '@supabase/supabase-js'
 import { getConfig } from './config.js'
 
 // Supabase credentials (same as web app)
-const SUPABASE_URL = 'https://pjzfmcsypilbhmzcxlbt.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqemZtY3N5cGlsYmhtemN4bGJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQwNTI0NjksImV4cCI6MjA0OTYyODQ2OX0.nE-Oi9xYm6NlI6R4MokXJcG75Wf4P_lEIaEiQzpPfGk'
+const SUPABASE_URL = 'https://xwaxnszxtgelllkstrcd.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3YXhuc3p4dGdlbGxsa3N0cmNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2OTMwODUsImV4cCI6MjA4MDI2OTA4NX0.8rivgwRpax9X3OuR9qKX27y8-9CWcigZn0IGObKXU6o'
 
 // Create Supabase client
 export function createSupabaseClient() {
@@ -140,3 +140,4 @@ export async function searchSnippets(query, options = {}) {
   if (error) throw error
   return data
 }
+
