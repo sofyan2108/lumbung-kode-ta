@@ -1,10 +1,10 @@
 # 📊 Analisis Mendalam Project Lumbung Kode - Snippet Manager
 
 > **Dokumen Analisis Komprehensif**  
-> Last Updated: 1 Januari 2026  
+> Last Updated: 2 Januari 2026  
 > Project: Lumbung Kode - Modern Snippet Manager  
 > Type: Full-Stack Web Application + CLI Tool  
-> Status: **TIER 1 Complete + CLI Tool** ✅
+> Status: **Production Ready - CLI Published to NPM** ✅
 
 ---
 
@@ -27,9 +27,9 @@
 
 ### 1.1 Gambaran Project
 
-**Lumbung Kode** adalah aplikasi manajemen snippet kode modern dengan dua interface:
-1. **Web Application** - SPA berbasis React untuk UI/UX visual
-2. **CLI Tool** - Command-line interface untuk developer workflow
+**Lumbung Kode** ("Gudang Snippet Kode Modern") adalah aplikasi manajemen snippet kode modern dengan dua interface:
+1. **Web Application** - SPA berbasis React untuk UI/UX visual di https://lumbung-kode.netlify.app
+2. **CLI Tool** - Command-line interface untuk developer workflow, published ke NPM sebagai `lumbung-cli`
 
 ### 1.2 Kompleksitas Teknis
 
@@ -51,10 +51,11 @@
 ✅ **Advanced Search** - PostgreSQL Full-Text Search dengan ranking  
 ✅ **Enhanced Metadata** - Dependencies, Usage Example, Documentation URL  
 ✅ **AI Auto-Detection** - Gemini API untuk metadata extraction  
-✅ **Social Features** - Like, Fork, Copy dengan realtime notifications  
-✅ **CLI Tool** - Upload, search, fetch snippets dari terminal  
+✅ **Social Features** - Like, Fork, Copy, Download dengan realtime notifications  
+✅ **CLI Tool** - Published to NPM (v1.0.4) with enhanced metadata support  
 ✅ **Dark Mode** - Persistent theme preference  
-✅ **Real-time Updates** - WebSocket notifications
+✅ **Real-time Updates** - WebSocket notifications  
+✅ **Download Functionality** - Export snippets as files
 
 ---
 
@@ -63,13 +64,13 @@
 ```
 snippet-manager/
 │
-├── cli/                         # 🆕 CLI Tool (Separate Package)
+├── cli/                         # 🆕 CLI Tool (Published to NPM)
 │   ├── bin/
-│   │   └── Lumbung Kode.js              # Entry point (executable)
+│   │   └── lumbung.js              # Entry point (executable)
 │   ├── src/
 │   │   ├── commands/
 │   │   │   ├── auth.js               # login/logout
-│   │   │   ├── push.js               # Upload snippet
+│   │   │   ├── push.js               # Upload snippet (with metadata)
 │   │   │   ├── get.js                # Fetch snippet
 │   │   │   ├── list.js               # List snippets
 │   │   │   └── search.js             # Full-text search
@@ -77,8 +78,8 @@ snippet-manager/
 │   │       ├── api.js                # Supabase client
 │   │       └── config.js             # Credential storage
 │   ├── package.json                  # CLI dependencies
-│   ├── README.md                     # User guide
-│   └── Lumbung Kode-cli-1.0.0.tgz      # NPM package
+│   ├── README.md                     # Comprehensive user guide
+│   └── lumbung-cli-1.0.4.tgz         # NPM package (latest)
 │
 ├── database/                    # SQL Migrations
 │   ├── migration_tier1.sql           # Collections + metadata
@@ -574,20 +575,20 @@ npm install -g Lumbung Kode-cli-1.0.0.tgz
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `Lumbung Kode login` | Login dengan email/password | `Lumbung Kode login` |
-| `Lumbung Kode push <file>` | Upload file sebagai snippet | `Lumbung Kode push app.js --public` |
-| `Lumbung Kode get <id>` | Fetch snippet by ID | `Lumbung Kode get abc123 --copy` |
-| `Lumbung Kode list` | List user snippets | `Lumbung Kode list --language python` |
-| `Lumbung Kode search <query>` | Full-text search | `Lumbung Kode search "react hooks"` |
-| `Lumbung Kode whoami` | Check login status | `Lumbung Kode whoami` |
-| `Lumbung Kode logout` | Logout | `Lumbung Kode logout` |
+| `lumbung login` | Login dengan email/password | `lumbung login` |
+| `lumbung push <file>` | Upload file sebagai snippet | `lumbung push app.js --public` |
+| `lumbung get <id>` | Fetch snippet by ID | `lumbung get abc123 --copy` |
+| `lumbung list` | List user snippets | `lumbung list --language python` |
+| `lumbung search <query>` | Full-text search | `lumbung search "react hooks"` |
+| `lumbung whoami` | Check login status | `lumbung whoami` |
+| `lumbung logout` | Logout | `lumbung logout` |
 
 ### 7.3 Architecture
 
 **File Structure:**
 ```
 cli/
-├── bin/Lumbung Kode.js          # Entry point (#!/usr/bin/env node)
+├── bin/lumbung.js          # Entry point (#!/usr/bin/env node)
 ├── src/
 │   ├── commands/             # Command handlers
 │   │   ├── auth.js           # login/logout
@@ -619,17 +620,17 @@ const EXTENSION_MAP = {
 **Examples:**
 ```bash
 # Login
-Lumbung Kode login
+lumbung login
 # Email: user@example.com
 # Password: ******
 # ✓ Logged in as user@example.com
 
 # Upload file
-Lumbung Kode push ./hooks/useDebounce.js --tags "react,hooks"
+lumbung push ./hooks/useDebounce.js --tags "react,hooks"
 # ✓ Snippet uploaded! ID: abc-123-xyz
 
 # Search
-Lumbung Kode search "authentication"
+lumbung search "authentication"
 # 🔍 Search Results: 3 found
 # 1. JWT Authentication Helper
 #    ID: xyz-789
@@ -639,9 +640,21 @@ Lumbung Kode search "authentication"
 ### 7.4 Technical Details
 
 **Package Distribution:**
-- `.tgz` file generated via `npm pack`
-- Can be published to NPM registry
+- **Published to NPM:** `npm install -g lumbung-cli`
+- Package name: `lumbung-cli@1.0.4`
+- Registry: https://npmjs.com/package/lumbung-cli
+- GitHub: https://github.com/sofyan2108/lumbung-kode-ta
 - Cross-platform (Windows/Mac/Linux)
+
+**Enhanced Metadata Support:**
+```bash
+lumbung push component.jsx \
+  --title "Custom Hook" \
+  --dependencies '["react","zustand"]' \
+  --usage "const data = useCustom()" \
+  --docs "https://docs.example.com" \
+  --public
+```
 
 **Dependencies:**
 - `commander` - CLI framework
@@ -900,4 +913,5 @@ Total:             ~4,100 LOC (excluding node_modules)
 ---
 
 *Dokumen ini menjelaskan arsitektur lengkap Lumbung Kode untuk keperluan Tugas Akhir. Semua fitur yang dijelaskan telah diimplementasikan dan diuji.*
+
 

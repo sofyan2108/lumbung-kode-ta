@@ -79,7 +79,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
                 <div className="w-10 h-10 bg-pink-50 dark:bg-pink-900/20 rounded-xl flex items-center justify-center text-pink-500 dark:text-pink-400 transition-colors">
                     <Code size={20} strokeWidth={3} />
                 </div>
-                <h1 className="text-xl font-bold text-gray-800 dark:text-white tracking-tight transition-colors">CodeHaven</h1>
+                <h1 className="text-xl font-bold text-gray-800 dark:text-white tracking-tight transition-colors">LumbungCode</h1>
             </Link>
             
             {/* Tombol Close (Mobile Only) */}
