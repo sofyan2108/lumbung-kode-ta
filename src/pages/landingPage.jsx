@@ -134,7 +134,7 @@ export default function LandingPage() {
 
       {/* FOOTER SIMPLE */}
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-12 py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-        <p>&copy; {new Date().getFullYear()} Lumbung Kode. Tugas Akhir Informatika.</p>
+        <p>&copy; {new Date().getFullYear()} Lumbung Kode by Sofyan Farros. All rights reserved.</p>
       </footer>
     </div>
   )
