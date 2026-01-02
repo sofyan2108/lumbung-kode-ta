@@ -1,6 +1,6 @@
-# 📦 CodeHaven CLI Releases
+# 📦 Lumbung Kode CLI Releases
 
-This folder is for packaged releases of CodeHaven CLI tool.
+This folder is for packaged releases of Lumbung Kode CLI tool.
 
 ## Generate Release Package
 
@@ -11,18 +11,18 @@ cd cli
 npm pack
 ```
 
-This will generate `codehaven-cli-1.0.0.tgz` file (~8 KB).
+This will generate `lumbung-cli-1.0.0.tgz` file (~8 KB).
 
 ## Installation from Package
 
 **Option 1: Install from .tgz file**
 ```bash
-npm install -g codehaven-cli-1.0.0.tgz
+npm install -g lumbung-cli-1.0.0.tgz
 ```
 
 **Option 2: Install from NPM (after publishing)**
 ```bash
-npm install -g codehaven-cli
+npm install -g lumbung-cli
 ```
 
 **Option 3: Install from source**
@@ -45,3 +45,4 @@ npm link
 - NPM
 
 For complete documentation, see `cli/README.md`.
+

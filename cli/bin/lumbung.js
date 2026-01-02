@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * CodeHaven CLI - Command Line Interface for CodeHaven Snippet Manager
+ * Lumbung CLI - Command Line Interface for Lumbung Kode
  * 
  * Usage:
- *   codehaven login              Login to your account
- *   codehaven push <file>        Upload a snippet from file
- *   codehaven get <id>           Fetch a snippet by ID
- *   codehaven list               List your snippets
- *   codehaven search <query>     Search snippets
- *   codehaven logout             Logout from your account
+ *   lumbung login              Login to your account
+ *   lumbung push <file>        Upload a snippet from file
+ *   lumbung get <id>           Fetch a snippet by ID
+ *   lumbung list               List your snippets
+ *   lumbung search <query>     Search snippets
+ *   lumbung logout             Logout from your account
  * 
- * Run 'codehaven --help' for more information.
+ * Run 'lumbung --help' for more information.
  */
 
 import { program } from 'commander'
@@ -27,21 +27,21 @@ import { getConfig } from '../src/lib/config.js'
 const banner = `
 ╔════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                ║
-║   ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗ █████╗ ██╗   ██╗███████╗███╗   ██╗  ║
-║  ██╔════╝██╔═══██╗██╔══██╗██╔════╝██║  ██║██╔══██╗██║   ██║██╔════╝████╗  ██║  ║
-║  ██║     ██║   ██║██║  ██║█████╗  ███████║███████║██║   ██║█████╗  ██╔██╗ ██║  ║
-║  ██║     ██║   ██║██║  ██║██╔══╝  ██╔══██║██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║  ║
-║  ╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║██║  ██║ ╚████╔╝ ███████╗██║ ╚████║  ║
-║   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝  ║
+║    ██╗     ██╗   ██╗███╗   ███╗██████╗ ██╗   ██╗███╗   ██╗ ██████╗            ║
+║    ██║     ██║   ██║████╗ ████║██╔══██╗██║   ██║████╗  ██║██╔════╝            ║
+║    ██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║██╔██╗ ██║██║  ███╗           ║
+║    ██║     ██║   ██║██║╚██╔╝██║██╔══██╗██║   ██║██║╚██╗██║██║   ██║           ║
+║    ███████╗╚██████╔╝██║ ╚═╝ ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝           ║
+║    ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚══════╝            ║
 ║                                                                                ║
-║                       Modern Snippet Manager - CLI Tool                        ║
+║                   Gudang Snippet Kode Modern - CLI Tool                        ║
 ║                                                                                ║
 ╚════════════════════════════════════════════════════════════════════════════════╝
 `
 
 program
-  .name('codehaven')
-  .description('CLI tool for CodeHaven - Modern Snippet Manager')
+  .name('lumbung')
+  .description('CLI tool for Lumbung Kode - Gudang Snippet Kode Modern')
   .version('1.0.0')
   .hook('preAction', (thisCommand) => {
     // Only show banner for main help
@@ -53,7 +53,7 @@ program
 // Login command
 program
   .command('login')
-  .description('Login to your CodeHaven account')
+  .description('Login to your Lumbung Kode account')
   .action(login)
 
 // Logout command
@@ -110,7 +110,7 @@ program
     if (config.email) {
       console.log(chalk.green(`✓ Logged in as: ${chalk.bold(config.email)}`))
     } else {
-      console.log(chalk.yellow('Not logged in. Run: codehaven login'))
+      console.log(chalk.yellow('Not logged in. Run: lumbung login'))
     }
   })
 

@@ -16,7 +16,7 @@ export default function LandingPage() {
           <div className="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-500/30">
             <Code size={24} strokeWidth={3} />
           </div>
-          <span className="text-xl font-bold tracking-tight">CodeHaven</span>
+          <span className="text-xl font-bold tracking-tight">Lumbung Kode</span>
         </div>
         
         <div className="flex items-center gap-4">
@@ -101,7 +101,7 @@ export default function LandingPage() {
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 </div>
                 <div className="space-y-3 font-mono text-sm">
-                    <div className="flex gap-2"><span className="text-gray-400">1</span> <span className="text-purple-500">const</span> <span className="text-blue-500">codeHaven</span> = <span className="text-yellow-500">{'{'}</span></div>
+                    <div className="flex gap-2"><span className="text-gray-400">1</span> <span className="text-purple-500">const</span> <span className="text-blue-500">lumbungKode</span> = <span className="text-yellow-500">{'{'}</span></div>
                     <div className="flex gap-2"><span className="text-gray-400">2</span> &nbsp;&nbsp;<span className="text-red-500">beautiful</span>: <span className="text-blue-400">true</span>,</div>
                     <div className="flex gap-2"><span className="text-gray-400">3</span> &nbsp;&nbsp;<span className="text-red-500">useful</span>: <span className="text-blue-400">true</span>,</div>
                     <div className="flex gap-2"><span className="text-gray-400">4</span> &nbsp;&nbsp;<span className="text-red-500">developer</span>: <span className="text-green-500">"Happy"</span></div>
@@ -134,7 +134,7 @@ export default function LandingPage() {
 
       {/* FOOTER SIMPLE */}
       <footer className="border-t border-gray-200 dark:border-gray-800 mt-12 py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-        <p>&copy; {new Date().getFullYear()} CodeHaven. Tugas Akhir Informatika.</p>
+        <p>&copy; {new Date().getFullYear()} Lumbung Kode. Tugas Akhir Informatika.</p>
       </footer>
     </div>
   )

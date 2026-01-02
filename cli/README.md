@@ -1,6 +1,6 @@
-# 🖥️ CodeHaven CLI
+# 🖥️ lumbung CLI
 
-Command Line Interface untuk **CodeHaven - Modern Snippet Manager**.
+Command Line Interface untuk **lumbung - Modern Snippet Manager**.
 
 Upload, cari, dan kelola snippet kode langsung dari terminal Anda.
 
@@ -10,7 +10,7 @@ Upload, cari, dan kelola snippet kode langsung dari terminal Anda.
 
 ### Prasyarat
 - Node.js versi 18 atau lebih baru
-- Akun CodeHaven (daftar di https://codehaven.app)
+- Akun lumbung (daftar di https://lumbung.app)
 
 ### Install dari Source
 
@@ -25,7 +25,7 @@ npm install
 npm link
 
 # Sekarang bisa digunakan dari mana saja
-codehaven --help
+lumbung --help
 ```
 
 ---
@@ -37,30 +37,30 @@ codehaven --help
 Sebelum menggunakan CLI, login terlebih dahulu:
 
 ```bash
-codehaven login
+lumbung login
 ```
 
-Masukkan email dan password akun CodeHaven Anda. Kredensial akan disimpan secara lokal.
+Masukkan email dan password akun lumbung Anda. Kredensial akan disimpan secara lokal.
 
 Cek status login:
 ```bash
-codehaven whoami
+lumbung whoami
 ```
 
 ### 2. Upload Snippet dari File
 
 ```bash
 # Upload file dengan auto-detect title dan language
-codehaven push myfile.js
+lumbung push myfile.js
 
 # Upload dengan title custom
-codehaven push script.py --title "Python Script"
+lumbung push script.py --title "Python Script"
 
 # Upload sebagai public snippet
-codehaven push helper.ts --public
+lumbung push helper.ts --public
 
 # Upload dengan metadata lengkap
-codehaven push api.go \
+lumbung push api.go \
   --title "Go REST API" \
   --description "Simple REST endpoint" \
   --tags "go,rest,api" \
@@ -71,51 +71,51 @@ codehaven push api.go \
 
 ```bash
 # List semua snippet
-codehaven list
+lumbung list
 
 # Filter by language
-codehaven list --language python
+lumbung list --language python
 
 # Limit hasil
-codehaven list --limit 5
+lumbung list --limit 5
 
 # Output sebagai JSON
-codehaven list --json
+lumbung list --json
 ```
 
 ### 4. Ambil Snippet by ID
 
 ```bash
 # Tampilkan snippet di terminal
-codehaven get abc123
+lumbung get abc123
 
 # Simpan ke file
-codehaven get abc123 --output ./download/snippet.js
+lumbung get abc123 --output ./download/snippet.js
 
 # Copy ke clipboard
-codehaven get abc123 --copy
+lumbung get abc123 --copy
 ```
 
 ### 5. Cari Snippet
 
 ```bash
 # Search dengan kata kunci
-codehaven search "react hooks"
+lumbung search "react hooks"
 
 # Search hanya snippet milik sendiri
-codehaven search "useEffect" --mine
+lumbung search "useEffect" --mine
 
 # Search snippet public
-codehaven search "authentication" --public
+lumbung search "authentication" --public
 
 # Filter by language
-codehaven search "api" --language python
+lumbung search "api" --language python
 ```
 
 ### 6. Logout
 
 ```bash
-codehaven logout
+lumbung logout
 ```
 
 ---
@@ -124,13 +124,13 @@ codehaven logout
 
 | Command | Deskripsi |
 |---------|-----------|
-| `codehaven login` | Login ke akun CodeHaven |
-| `codehaven logout` | Logout dari akun |
-| `codehaven whoami` | Tampilkan user yang sedang login |
-| `codehaven push <file>` | Upload file sebagai snippet |
-| `codehaven get <id>` | Ambil snippet berdasarkan ID |
-| `codehaven list` | Daftar snippet milik Anda |
-| `codehaven search <query>` | Cari snippet dengan full-text search |
+| `lumbung login` | Login ke akun lumbung |
+| `lumbung logout` | Logout dari akun |
+| `lumbung whoami` | Tampilkan user yang sedang login |
+| `lumbung push <file>` | Upload file sebagai snippet |
+| `lumbung get <id>` | Ambil snippet berdasarkan ID |
+| `lumbung list` | Daftar snippet milik Anda |
+| `lumbung search <query>` | Cari snippet dengan full-text search |
 
 ---
 
@@ -200,30 +200,30 @@ CLI mendukung **semua bahasa pemrograman**. Auto-detect berdasarkan extension:
 
 ```bash
 # Pagi: Login
-codehaven login
+lumbung login
 
 # Simpan function baru yang dibuat
-codehaven push ./src/utils/debounce.js --tags "utility,hooks"
+lumbung push ./src/utils/debounce.js --tags "utility,hooks"
 
 # Cari snippet lama
-codehaven search "validation"
+lumbung search "validation"
 
 # Ambil snippet dan gunakan
-codehaven get xyz789 --output ./temp/snippet.js
+lumbung get xyz789 --output ./temp/snippet.js
 
 # Sore: Check semua snippet hari ini
-codehaven list --limit 20
+lumbung list --limit 20
 ```
 
 ### Scripting & Automation
 
 ```bash
 # Export semua snippet sebagai JSON
-codehaven list --json > my-snippets.json
+lumbung list --json > my-snippets.json
 
 # Batch upload
 for file in ./src/**/*.js; do
-  codehaven push "$file" --public
+  lumbung push "$file" --public
 done
 ```
 
@@ -232,10 +232,10 @@ done
 ## ❓ Troubleshooting
 
 ### "Not logged in"
-Jalankan `codehaven login` terlebih dahulu.
+Jalankan `lumbung login` terlebih dahulu.
 
 ### "Snippet not found"
-Pastikan ID snippet benar. Gunakan `codehaven list` untuk melihat ID snippet Anda.
+Pastikan ID snippet benar. Gunakan `lumbung list` untuk melihat ID snippet Anda.
 
 ### "Search failed"
 Query minimal 3 karakter. Pastikan koneksi internet aktif.
@@ -243,12 +243,13 @@ Query minimal 3 karakter. Pastikan koneksi internet aktif.
 ### Credential issues
 Hapus credential dan login ulang:
 ```bash
-codehaven logout
-codehaven login
+lumbung logout
+lumbung login
 ```
 
 ---
 
 ## 📄 License
 
-MIT License - CodeHaven Team
+MIT License - lumbung Team
+

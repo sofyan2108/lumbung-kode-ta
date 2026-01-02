@@ -24,7 +24,7 @@ export async function login() {
     if (!confirm) return
   }
   
-  console.log(chalk.cyan('\n📧 Login to CodeHaven\n'))
+  console.log(chalk.cyan('\n📧 Login to Lumbung Kode\n'))
   
   // Prompt for credentials
   const answers = await inquirer.prompt([
@@ -68,7 +68,7 @@ export async function login() {
     spinner.fail(chalk.red('Login failed'))
     console.log(chalk.red(`Error: ${error.message}`))
     console.log(chalk.gray('\nMake sure your email and password are correct.'))
-    console.log(chalk.gray('If you don\'t have an account, register at https://codehaven.app'))
+    console.log(chalk.gray('If you don\'t have an account, register at https://Lumbung Kode.app'))
   }
 }
 
@@ -92,3 +92,4 @@ export async function logout() {
     console.log(chalk.green('✓ Logged out successfully.'))
   }
 }
+

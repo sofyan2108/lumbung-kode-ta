@@ -1,11 +1,11 @@
 {
-  "name": "codehaven-cli",
+  "name": "lumbung-cli",
   "version": "1.0.0",
-  "description": "CLI tool for CodeHaven - Modern Snippet Manager",
+  "description": "CLI tool for Lumbung Kode - Gudang Snippet Kode Modern",
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "codehaven": "./bin/codehaven.js"
+    "lumbung": "./bin/lumbung.js"
   },
   "scripts": {
     "start": "node bin/codehaven.js",

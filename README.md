@@ -1,6 +1,6 @@
-# ☁️ CodeHaven - Modern Snippet Manager
+# ☁️ Lumbung Kode - Modern Snippet Manager
 
-CodeHaven adalah aplikasi manajemen snippet kode modern yang dirancang untuk developer. Aplikasi ini memungkinkan pengguna menyimpan, mengelola, membagikan, dan menemukan potongan kode (snippets) dengan antarmuka yang indah dan responsif.
+Lumbung Kode adalah aplikasi manajemen snippet kode modern yang dirancang untuk developer. Aplikasi ini memungkinkan pengguna menyimpan, mengelola, membagikan, dan menemukan potongan kode (snippets) dengan antarmuka yang indah dan responsif.
 
 ## 🚀 Fitur Utama
 
@@ -75,7 +75,7 @@ src/
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/sofyan2108/codeheaven-ta.git
+   git clone https://github.com/sofyan2108/lumbung-kode-ta.git
    cd snippet-manager
    ```
 
@@ -108,3 +108,4 @@ src/
 
 ---
 Dibuat untuk Tugas Akhir Kuliah.
+

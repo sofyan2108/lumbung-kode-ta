@@ -1,8 +1,8 @@
-# 📊 Analisis Mendalam Project CodeHaven - Snippet Manager
+# 📊 Analisis Mendalam Project Lumbung Kode - Snippet Manager
 
 > **Dokumen Analisis Komprehensif**  
 > Last Updated: 1 Januari 2026  
-> Project: CodeHaven - Modern Snippet Manager  
+> Project: Lumbung Kode - Modern Snippet Manager  
 > Type: Full-Stack Web Application + CLI Tool  
 > Status: **TIER 1 Complete + CLI Tool** ✅
 
@@ -27,7 +27,7 @@
 
 ### 1.1 Gambaran Project
 
-**CodeHaven** adalah aplikasi manajemen snippet kode modern dengan dua interface:
+**Lumbung Kode** adalah aplikasi manajemen snippet kode modern dengan dua interface:
 1. **Web Application** - SPA berbasis React untuk UI/UX visual
 2. **CLI Tool** - Command-line interface untuk developer workflow
 
@@ -65,7 +65,7 @@ snippet-manager/
 │
 ├── cli/                         # 🆕 CLI Tool (Separate Package)
 │   ├── bin/
-│   │   └── codehaven.js              # Entry point (executable)
+│   │   └── Lumbung Kode.js              # Entry point (executable)
 │   ├── src/
 │   │   ├── commands/
 │   │   │   ├── auth.js               # login/logout
@@ -78,7 +78,7 @@ snippet-manager/
 │   │       └── config.js             # Credential storage
 │   ├── package.json                  # CLI dependencies
 │   ├── README.md                     # User guide
-│   └── codehaven-cli-1.0.0.tgz      # NPM package
+│   └── Lumbung Kode-cli-1.0.0.tgz      # NPM package
 │
 ├── database/                    # SQL Migrations
 │   ├── migration_tier1.sql           # Collections + metadata
@@ -564,30 +564,30 @@ npm install
 npm link
 
 # Option 2: From package (if published to NPM)
-npm install -g codehaven-cli
+npm install -g Lumbung Kode-cli
 
 # Option 3: From .tgz file
-npm install -g codehaven-cli-1.0.0.tgz
+npm install -g Lumbung Kode-cli-1.0.0.tgz
 ```
 
 ### 7.2 Commands
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `codehaven login` | Login dengan email/password | `codehaven login` |
-| `codehaven push <file>` | Upload file sebagai snippet | `codehaven push app.js --public` |
-| `codehaven get <id>` | Fetch snippet by ID | `codehaven get abc123 --copy` |
-| `codehaven list` | List user snippets | `codehaven list --language python` |
-| `codehaven search <query>` | Full-text search | `codehaven search "react hooks"` |
-| `codehaven whoami` | Check login status | `codehaven whoami` |
-| `codehaven logout` | Logout | `codehaven logout` |
+| `Lumbung Kode login` | Login dengan email/password | `Lumbung Kode login` |
+| `Lumbung Kode push <file>` | Upload file sebagai snippet | `Lumbung Kode push app.js --public` |
+| `Lumbung Kode get <id>` | Fetch snippet by ID | `Lumbung Kode get abc123 --copy` |
+| `Lumbung Kode list` | List user snippets | `Lumbung Kode list --language python` |
+| `Lumbung Kode search <query>` | Full-text search | `Lumbung Kode search "react hooks"` |
+| `Lumbung Kode whoami` | Check login status | `Lumbung Kode whoami` |
+| `Lumbung Kode logout` | Logout | `Lumbung Kode logout` |
 
 ### 7.3 Architecture
 
 **File Structure:**
 ```
 cli/
-├── bin/codehaven.js          # Entry point (#!/usr/bin/env node)
+├── bin/Lumbung Kode.js          # Entry point (#!/usr/bin/env node)
 ├── src/
 │   ├── commands/             # Command handlers
 │   │   ├── auth.js           # login/logout
@@ -619,17 +619,17 @@ const EXTENSION_MAP = {
 **Examples:**
 ```bash
 # Login
-codehaven login
+Lumbung Kode login
 # Email: user@example.com
 # Password: ******
 # ✓ Logged in as user@example.com
 
 # Upload file
-codehaven push ./hooks/useDebounce.js --tags "react,hooks"
+Lumbung Kode push ./hooks/useDebounce.js --tags "react,hooks"
 # ✓ Snippet uploaded! ID: abc-123-xyz
 
 # Search
-codehaven search "authentication"
+Lumbung Kode search "authentication"
 # 🔍 Search Results: 3 found
 # 1. JWT Authentication Helper
 #    ID: xyz-789
@@ -760,14 +760,14 @@ npm run build
 2. **Package File (.tgz):**
    ```bash
    npm pack
-   # Share: codehaven-cli-1.0.0.tgz
+   # Share: Lumbung Kode-cli-1.0.0.tgz
    ```
 
 3. **NPM Registry (Production):**
    ```bash
    npm login
    npm publish
-   # Users: npm install -g codehaven-cli
+   # Users: npm install -g Lumbung Kode-cli
    ```
 
 ### 9.3 Database
@@ -813,7 +813,7 @@ npm run build
 
 **Dibanding snippet manager lain:**
 
-| Feature | CodeHaven | GitHub Gist | SnippetsLab |
+| Feature | Lumbung Kode | GitHub Gist | SnippetsLab |
 |---------|-----------|-------------|-------------|
 | Web App | ✅ | ✅ | ❌ |
 | CLI Tool | ✅ 🆕 | ✅ | ❌ |
@@ -894,9 +894,10 @@ Total:             ~4,100 LOC (excluding node_modules)
 
 **Project Status:** Production-Ready ✅  
 **Last Updated:** 1 Januari 2026  
-**GitHub:** https://github.com/sofyan2108/codeheaven-ta  
-**Live Demo:** https://codehaven.netlify.app (atau vercel)
+**GitHub:** https://github.com/sofyan2108/lumbung-kode-ta  
+**Live Demo:** https://Lumbung Kode.netlify.app (atau vercel)
 
 ---
 
-*Dokumen ini menjelaskan arsitektur lengkap CodeHaven untuk keperluan Tugas Akhir. Semua fitur yang dijelaskan telah diimplementasikan dan diuji.*
+*Dokumen ini menjelaskan arsitektur lengkap Lumbung Kode untuk keperluan Tugas Akhir. Semua fitur yang dijelaskan telah diimplementasikan dan diuji.*
+
