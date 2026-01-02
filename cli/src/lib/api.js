@@ -103,7 +103,12 @@ export async function createSnippet(snippetData) {
     .select()
     .single()
   
-  if (error) throw error
+  if (error) {
+    if (error.message && error.message.includes('JWT expired')) {
+      throw new Error('Sesi login berakhir. Silakan jalankan: lumbung login')
+    }
+    throw error
+  }
   return data
 }
 
