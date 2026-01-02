@@ -32,7 +32,7 @@ export default function TopBar({ onMenuClick }) {
 
          <div className="flex flex-col">
             <h2 className="text-xl font-bold text-gray-800 dark:text-white transition-colors tracking-tight">
-               LumbungCode
+               LumbungKode
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Manage your snippets efficiently</p>
          </div>
