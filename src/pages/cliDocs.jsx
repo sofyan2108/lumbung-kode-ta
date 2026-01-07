@@ -29,8 +29,8 @@ function CodeBlock({ code, language = 'bash', copyable = true }) {
   }
 
   return (
-    <div className="relative group">
-      <pre className="bg-gray-900 dark:bg-black/50 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm font-mono border border-gray-800">
+    <div className="relative group overflow-hidden">
+      <pre className="bg-gray-900 dark:bg-black/50 text-gray-100 p-4 rounded-xl overflow-x-auto text-sm font-mono border border-gray-800 whitespace-pre-wrap break-all">
         <code>{code}</code>
       </pre>
       {copyable && (
@@ -46,17 +46,16 @@ function CodeBlock({ code, language = 'bash', copyable = true }) {
   )
 }
 
-// Command card component
 function CommandCard({ icon: Icon, title, description, command, options }) {
   return (
-    <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 space-y-4">
+    <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 sm:p-6 space-y-4 overflow-hidden">
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
           <Icon className="text-pink-500" size={20} />
         </div>
-        <div>
-          <h3 className="font-bold text-gray-900 dark:text-white">{title}</h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{description}</p>
+        <div className="min-w-0">
+          <h3 className="font-bold text-gray-900 dark:text-white break-words">{title}</h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 break-words">{description}</p>
         </div>
       </div>
       
@@ -75,9 +74,9 @@ function CommandCard({ icon: Icon, title, description, command, options }) {
             <tbody>
               {options.map((opt, i) => (
                 <tr key={i} className="border-b border-gray-100 dark:border-gray-800">
-                  <td className="py-2 px-3 font-mono text-pink-600 dark:text-pink-400">{opt.option}</td>
-                  <td className="py-2 px-3 font-mono text-gray-500">{opt.alias || '-'}</td>
-                  <td className="py-2 px-3 text-gray-600 dark:text-gray-400">{opt.desc}</td>
+                  <td className="py-2 px-2 sm:px-3 font-mono text-pink-600 dark:text-pink-400 text-xs sm:text-sm break-all">{opt.option}</td>
+                  <td className="py-2 px-2 sm:px-3 font-mono text-gray-500 text-xs sm:text-sm">{opt.alias || '-'}</td>
+                  <td className="py-2 px-2 sm:px-3 text-gray-600 dark:text-gray-400 text-xs sm:text-sm">{opt.desc}</td>
                 </tr>
               ))}
             </tbody>
