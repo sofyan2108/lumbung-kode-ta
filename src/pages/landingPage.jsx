@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Code, Share2, GitFork, Heart, ArrowRight, Layout, Moon, Sun, LayoutDashboard } from 'lucide-react'
+import { Code, Share2, GitFork, Heart, ArrowRight, Layout, Moon, Sun, LayoutDashboard, Terminal } from 'lucide-react'
 import { useThemeStore } from '../store/themeStore'
 import { useAuthStore } from '../store/authStore' // 1. Import Auth Store
 
@@ -26,6 +26,11 @@ export default function LandingPage() {
           >
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
+
+          <Link to="/cli-docs" className="hidden sm:flex items-center gap-1.5 font-semibold hover:text-pink-500 transition">
+            <Terminal size={18} />
+            CLI
+          </Link>
 
           {/* 3. Logika Tombol Navbar */}
           {user ? (
@@ -113,22 +118,29 @@ export default function LandingPage() {
 
       {/* FEATURE GRID */}
       <section className="max-w-7xl mx-auto px-6 py-20 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500 fill-mode-backwards">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FeatureCard 
                 icon={<Layout className="text-blue-500" />} 
                 title="Manajemen Rapi" 
-                desc="Simpan snippet dengan tag, bahasa, dan pencarian instan. Tidak ada lagi kode yang hilang."
+                desc="Simpan snippet dengan tag, bahasa, dan pencarian instan."
             />
             <FeatureCard 
                 icon={<GitFork className="text-purple-500" />} 
                 title="Fork & Remix" 
-                desc="Lihat kode orang lain? Fork ke dashboardmu dan modifikasi sesuai kebutuhan tanpa merusak aslinya."
+                desc="Fork snippet orang lain ke dashboardmu dan modifikasi."
             />
             <FeatureCard 
                 icon={<Share2 className="text-green-500" />} 
                 title="Bagikan Ide" 
-                desc="Satu klik untuk membagikan link snippet ke teman atau komunitas. Pamerkan kreasimu."
+                desc="Satu klik membagikan link snippet ke teman atau komunitas."
             />
+            <Link to="/cli-docs">
+              <FeatureCard 
+                  icon={<Terminal className="text-pink-500" />} 
+                  title="CLI Tool" 
+                  desc="Kelola snippet langsung dari terminal. Install via NPM!"
+              />
+            </Link>
         </div>
       </section>
 

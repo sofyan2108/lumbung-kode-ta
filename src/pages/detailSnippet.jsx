@@ -5,13 +5,14 @@ import { useSnippetStore } from '../store/snippetStore'
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../store/themeStore'
 import { useAlertStore } from '../store/alertStore'
-import { Loader2, Copy, Check, GitFork, Pencil, Heart, Share2, ArrowLeft, Calendar, User, Globe, Lock, Tag, Trash2, Save, AlertTriangle, Wand2, X, Download } from 'lucide-react'
+import { Loader2, Copy, Check, GitFork, Pencil, Heart, Share2, ArrowLeft, Calendar, User, Globe, Lock, Tag, Trash2, Save, AlertTriangle, Wand2, X, Download, Sparkles } from 'lucide-react'
 import CodeMirror from '@uiw/react-codemirror'
 import { dracula } from '@uiw/codemirror-theme-dracula'
 import { githubLight } from '@uiw/codemirror-theme-github'
 import { getLanguageExtension, getLangColor, getFileExtension } from '../utils/languageConfig'
 import LanguageSelector from '../components/languageSelector'
 import { formatCode } from '../utils/formatCode'
+import { analyzeCodeWithAI } from '../utils/AIService'
 
 export default function DetailSnippet() {
   const { id } = useParams()
@@ -36,6 +37,7 @@ export default function DetailSnippet() {
   const [isEditing, setIsEditing] = useState(false)
   const [editLoading, setEditLoading] = useState(false)
   const [isFormatting, setIsFormatting] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   
   // State Data Form
   const [formData, setFormData] = useState({
@@ -153,6 +155,36 @@ export default function DetailSnippet() {
       showAlert('error', 'Gagal Format', 'Pastikan sintaks kode benar sebelum diformat.')
     } finally {
       setIsFormatting(false)
+    }
+  }
+
+  // --- HANDLER AI AUTOFILL ---
+  const handleAnalyzeCode = async () => {
+    if (!formData.code || formData.code.length < 10) {
+      showAlert('error', 'Kode Kosong', 'Masukkan kode terlebih dahulu agar AI bisa menganalisis.')
+      return
+    }
+
+    setIsAnalyzing(true)
+    try {
+      const result = await analyzeCodeWithAI(formData.code)
+      
+      setFormData(prev => ({
+        ...prev,
+        title: result.title || prev.title,
+        language: result.language || prev.language,
+        description: result.description || prev.description,
+        tagsInput: result.tags?.join(', ') || prev.tagsInput,
+        dependencies: result.dependencies?.length > 0 ? result.dependencies : prev.dependencies,
+        usageExample: result.usage_example || prev.usageExample
+      }))
+      
+      showAlert('success', 'AI Selesai!', 'Metadata telah diupdate dari analisis kode.')
+    } catch (error) {
+      console.error(error)
+      showAlert('error', 'Gagal Analisis', error.message || 'Terjadi kesalahan pada AI.')
+    } finally {
+      setIsAnalyzing(false)
     }
   }
 
@@ -407,7 +439,18 @@ export default function DetailSnippet() {
             
             <div className="flex items-center gap-2 ml-auto">
                 {isEditing && (
-                    <button type="button" onClick={handleFormat} disabled={isFormatting} className="flex items-center gap-1.5 text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition disabled:opacity-50"><Wand2 size={14} className={isFormatting ? "animate-spin" : ""} />{isFormatting ? "Formatting..." : "Format Code"}</button>
+                    <>
+                      <button type="button" onClick={handleFormat} disabled={isFormatting} className="flex items-center gap-1.5 text-xs font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 px-3 py-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition disabled:opacity-50"><Wand2 size={14} className={isFormatting ? "animate-spin" : ""} />{isFormatting ? "Formatting..." : "Format Code"}</button>
+                      <button 
+                        type="button" 
+                        onClick={handleAnalyzeCode} 
+                        disabled={isAnalyzing} 
+                        className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                      >
+                        {isAnalyzing ? <Loader2 className="animate-spin" size={14}/> : <Sparkles size={14} />}
+                        {isAnalyzing ? "Analyzing..." : "AI Autofill"}
+                      </button>
+                    </>
                 )}
                 <button type="button" onClick={handleDownload} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition border text-gray-600 bg-white border-gray-200 hover:border-pastel-primary hover:text-pastel-primary dark:text-gray-300 dark:bg-white/5 dark:border-gray-700 dark:hover:text-white" title="Download File"><Download size={16} /> Download</button>
                 <button type="button" onClick={handleCopy} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition border ${isCopied ? 'text-green-600 bg-green-50 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-900' : 'text-gray-600 bg-white border-gray-200 hover:border-pastel-primary hover:text-pastel-primary dark:text-gray-300 dark:bg-white/5 dark:border-gray-700 dark:hover:text-white'}`}>{isCopied ? <><Check size={16} /> Copied</> : <><Copy size={16} /> Copy Raw</>}</button>

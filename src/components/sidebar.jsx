@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom'
-import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X, Folder, ChevronDown, ChevronRight } from 'lucide-react'
+import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X, Folder, ChevronDown, ChevronRight, Terminal } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useAlertStore } from '../store/alertStore'
 import { useCollectionStore } from '../store/collectionStore'
@@ -26,6 +26,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
   const menus = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutGrid },
     { name: 'Explore', path: '/explore', icon: Globe },
+    { name: 'CLI Docs', path: '/cli-docs', icon: Terminal },
   ]
 
   const handleLogout = async () => {

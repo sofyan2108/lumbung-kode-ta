@@ -54,3 +54,7 @@ temp/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Documentation and data files
+*.md
+*.csv
