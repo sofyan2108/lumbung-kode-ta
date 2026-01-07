@@ -1,10 +1,17 @@
-import { CheckCircle2, AlertTriangle, X } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, X, LogIn } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { useAlertStore } from '../store/alertStore'
 
 export default function GlobalAlert() {
-  const { isOpen, type, title, message, closeAlert } = useAlertStore()
+  const { isOpen, type, title, message, showLoginButton, closeAlert } = useAlertStore()
+  const navigate = useNavigate()
 
   if (!isOpen) return null
+
+  const handleLogin = () => {
+    closeAlert()
+    navigate('/login')
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
@@ -34,16 +41,27 @@ export default function GlobalAlert() {
             </div>
           </div>
 
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-end gap-3">
+            {showLoginButton && (
+              <button 
+                onClick={handleLogin}
+                className="flex-[2] px-6 py-2.5 rounded-xl font-bold text-white transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-lg bg-pink-500 hover:bg-pink-600 shadow-pink-500/30 flex items-center justify-center gap-2"
+              >
+                <LogIn size={18} />
+                Login Sekarang
+              </button>
+            )}
             <button 
               onClick={closeAlert}
               className={`px-6 py-2.5 rounded-xl font-bold text-white transition-all transform hover:-translate-y-0.5 active:scale-95 shadow-lg ${
                  type === 'success' 
                  ? 'bg-green-500 hover:bg-green-600 shadow-green-500/30' 
-                 : 'bg-red-500 hover:bg-red-600 shadow-red-500/30'
+                 : showLoginButton 
+                   ? 'flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 shadow-none'
+                   : 'bg-red-500 hover:bg-red-600 shadow-red-500/30'
               }`}
             >
-              Oke, Mengerti
+              {showLoginButton ? 'Tutup' : 'Oke, Mengerti'}
             </button>
           </div>
         </div>

@@ -66,7 +66,7 @@ export default function SnippetCard({ snippet }) {
   const handleLikeClick = () => {
     // CEK LOGIN
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk memberikan like.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk memberikan like.', true)
         return
     }
     toggleLike(snippet.id)
@@ -75,7 +75,7 @@ export default function SnippetCard({ snippet }) {
   const handleForkClick = () => {
     // CEK LOGIN
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk melakukan fork.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk melakukan fork.', true)
         return
     }
     setShowForkConfirm(true)

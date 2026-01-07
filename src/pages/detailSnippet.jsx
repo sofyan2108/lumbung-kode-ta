@@ -190,7 +190,7 @@ export default function DetailSnippet() {
 
   const handleLike = async () => {
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk menyukai snippet ini.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk menyukai snippet ini.', true)
         return
     }
 
@@ -204,7 +204,7 @@ export default function DetailSnippet() {
   // Klik tombol Fork -> Buka Modal
   const handleForkClick = () => {
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login untuk melakukan fork.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login untuk melakukan fork.', true)
         return
     }
     setShowForkConfirm(true)

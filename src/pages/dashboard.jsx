@@ -39,7 +39,7 @@ export default function Dashboard() {
   // LOGIC TOMBOL ADD (CHECK USER)
   const handleAddClick = () => {
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk membuat snippet baru.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu untuk membuat snippet baru.', true)
         return
     }
     setIsAddModalOpen(true)
@@ -51,7 +51,7 @@ export default function Dashboard() {
 
   useShortcut('n', () => {
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu.', true)
         return
     }
     setIsAddModalOpen(true)

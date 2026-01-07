@@ -122,7 +122,10 @@ npm link`} />
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-        <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">✅ Verifikasi Instalasi</h4>
+        <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+          <Check size={20} />
+          Cek Instalasi
+        </h4>
         <p className="text-blue-700 dark:text-blue-400 text-sm mb-3">Jalankan command berikut untuk memastikan CLI terinstall:</p>
         <CodeBlock code="lumbung --version" />
       </div>

@@ -37,7 +37,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
 
   const handleNewSnippetClick = () => {
     if (!user) {
-        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu.')
+        showAlert('error', 'Login Diperlukan', 'Silakan login terlebih dahulu.', true)
         return
     }
     // Tutup sidebar di mobile saat menu diklik
@@ -48,7 +48,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
   const handleProtectedLink = (e, path) => {
     if (!user && path === '/dashboard') {
       e.preventDefault()
-      showAlert('error', 'Login Diperlukan', 'Silakan login untuk mengakses Dashboard.')
+      showAlert('error', 'Login Diperlukan', 'Silakan login untuk mengakses Dashboard.', true)
     } else {
       // Tutup sidebar di mobile saat menu diklik
       if (window.innerWidth < 1024) onClose()
