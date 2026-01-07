@@ -27,10 +27,6 @@ export default function LandingPage() {
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
 
-          <Link to="/cli-docs" className="hidden sm:flex items-center gap-1.5 font-semibold hover:text-pink-500 transition">
-            <Terminal size={18} />
-            CLI
-          </Link>
 
           {/* 3. Logika Tombol Navbar */}
           {user ? (
