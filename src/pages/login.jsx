@@ -53,8 +53,8 @@ export default function Login() {
               <Code size={40} strokeWidth={2.5} />
            </div>
            <h2 className="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
-             Simpan Kodinganmu.<br/>
-             <span className="text-pink-500">Bagikan Idenya.</span>
+             Simpan dan .<br/>
+             <span className="text-pink-500">Bagikan Kodinganmu.</span>
            </h2>
            <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
              Platform manajemen snippet modern untuk developer yang mengutamakan keindahan dan efisiensi.
