@@ -172,8 +172,7 @@ function QuickStartSection() {
       </div>
 
       <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 flex items-center gap-3">
-        <span className="text-2xl">🎉</span>
-        <p className="text-green-700 dark:text-green-400 font-medium">Selesai! Kamu sudah siap menggunakan Lumbung CLI.</p>
+         <p className="text-green-700 dark:text-green-400 font-medium">Selesai! Kamu sudah siap menggunakan Lumbung CLI.</p>
       </div>
     </div>
   )
@@ -196,7 +195,7 @@ function CommandsSection() {
       {/* Authentication */}
       <div className="space-y-4">
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          🔐 Authentication
+          Authentication
         </h3>
         <div className="grid gap-4">
           <CommandCard
