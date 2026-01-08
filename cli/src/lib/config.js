@@ -5,7 +5,7 @@
 import Conf from 'conf'
 
 const config = new Conf({
-  projectName: 'codehaven-cli',
+  projectName: 'lumbung-cli',
   schema: {
     accessToken: { type: 'string', default: '' },
     refreshToken: { type: 'string', default: '' },

@@ -55,7 +55,7 @@ export async function search(query, options) {
     
     console.log('')
     console.log(chalk.gray('─'.repeat(80)))
-    console.log(chalk.gray('Fetch snippet: codehaven get <id>'))
+    console.log(chalk.gray('Fetch snippet: lumbung get <id>'))
     
   } catch (error) {
     spinner.fail(chalk.red('Search failed'))

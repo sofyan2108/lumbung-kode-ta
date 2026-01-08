@@ -41,7 +41,7 @@ const EXTENSION_MAP = {
 export async function push(file, options) {
   // Check login
   if (!isLoggedIn()) {
-    console.log(chalk.red('✗ Not logged in. Run: codehaven login'))
+    console.log(chalk.red('✗ Not logged in. Run: lumbung login'))
     return
   }
   

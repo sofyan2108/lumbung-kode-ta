@@ -10,7 +10,7 @@ import { isLoggedIn } from '../lib/config.js'
 export async function list(options) {
   // Check login
   if (!isLoggedIn()) {
-    console.log(chalk.red('✗ Not logged in. Run: codehaven login'))
+    console.log(chalk.red('✗ Not logged in. Run: lumbung login'))
     return
   }
   
@@ -27,7 +27,7 @@ export async function list(options) {
     
     if (snippets.length === 0) {
       console.log(chalk.yellow('\n📭 No snippets found.'))
-      console.log(chalk.gray('Create your first snippet: codehaven push <file>'))
+      console.log(chalk.gray('Create your first snippet: lumbung push <file>'))
       return
     }
     

@@ -69,7 +69,7 @@ export default function Login() {
               </div>
               <div className="space-y-2 font-mono text-xs text-gray-600 dark:text-gray-300">
                 <p><span className="text-purple-500">const</span> <span className="text-blue-500">welcome</span> = () <span className="text-purple-500">=&gt;</span> {'{'}</p>
-                <p className="pl-4"><span className="text-blue-500">return</span> <span className="text-green-500">"Hello, CodeHaven!"</span>;</p>
+                <p className="pl-4"><span className="text-blue-500">return</span> <span className="text-green-500">"Hello, Lumbung Kode!"</span>;</p>
                 <p>{'}'}</p>
               </div>
            </div>
