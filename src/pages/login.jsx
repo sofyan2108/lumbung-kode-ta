@@ -1,4 +1,5 @@
 import { useAuthStore } from '../store/authStore'
+import { useAlertStore } from '../store/alertStore'
 import { useThemeStore } from '../store/themeStore'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -6,6 +7,7 @@ import { Mail, Lock, User, Loader2, ArrowRight, Sun, Moon, Code, Eye, EyeOff } f
 
 export default function Login() {
   const { loginWithEmail, registerWithEmail, user } = useAuthStore()
+  const { showAlert } = useAlertStore()
   const { theme, toggleTheme } = useThemeStore()
   const navigate = useNavigate()
   
@@ -29,12 +31,12 @@ export default function Login() {
     try {
       if (isRegister) {
         await registerWithEmail(formData.email, formData.password, formData.fullName)
-        alert('Registrasi berhasil! Akun Anda sudah aktif.')
+        showAlert('success', 'Registrasi Berhasil!', 'Akun Anda sudah aktif. Silakan login.')
       } else {
         await loginWithEmail(formData.email, formData.password)
       }
     } catch (error) {
-      alert('Gagal: ' + error.message)
+      showAlert('error', 'Gagal', error.message)
     } finally {
       setLoading(false)
     }
