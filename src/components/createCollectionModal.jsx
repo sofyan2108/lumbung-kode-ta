@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useCollectionStore } from '../store/collectionStore'
 import { useAlertStore } from '../store/alertStore'
 
-const PRESET_ICONS = ['📁', '📚', '⚡', '🎨', '🔧', '🚀', '💡', '🎯', '🔥', '✨', '📦', '🎭']
+
 const PRESET_COLORS = [
   { name: 'Indigo', value: '#6366f1' },
   { name: 'Purple', value: '#8b5cf6' },
@@ -22,7 +22,7 @@ export default function CreateCollectionModal({ isOpen, onClose, editCollection 
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState(editCollection?.name || '')
   const [description, setDescription] = useState(editCollection?.description || '')
-  const [selectedIcon, setSelectedIcon] = useState(editCollection?.icon || '📁')
+
   const [selectedColor, setSelectedColor] = useState(editCollection?.color || '#6366f1')
 
   if (!isOpen) return null
@@ -42,7 +42,6 @@ export default function CreateCollectionModal({ isOpen, onClose, editCollection 
       const collectionData = {
         name: name.trim(),
         description: description.trim(),
-        icon: selectedIcon,
         color: selectedColor
       }
 
@@ -121,28 +120,7 @@ export default function CreateCollectionModal({ isOpen, onClose, editCollection 
             </div>
           </div>
 
-          {/* Icon Picker */}
-          <div>
-            <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">
-              Icon
-            </label>
-            <div className="grid grid-cols-6 gap-2">
-              {PRESET_ICONS.map(icon => (
-                <button
-                  key={icon}
-                  type="button"
-                  onClick={() => setSelectedIcon(icon)}
-                  className={`p-3 text-2xl rounded-lg border-2 transition hover:scale-110 ${
-                    selectedIcon === icon
-                      ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-          </div>
+
 
           {/* Color Picker */}
           <div>
@@ -178,7 +156,7 @@ export default function CreateCollectionModal({ isOpen, onClose, editCollection 
               className="flex items-center gap-3 px-4 py-3 rounded-lg"
               style={{ backgroundColor: selectedColor + '20', borderLeft: `4px solid ${selectedColor}` }}
             >
-              <span className="text-2xl">{selectedIcon}</span>
+              <span className="text-2xl">📁</span>
               <div className="flex-1">
                 <p className="font-bold text-gray-800 dark:text-white">
                   {name || 'Nama Collection'}

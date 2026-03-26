@@ -204,10 +204,19 @@ export default function AddSnippetModal({ isOpen, onClose }) {
           
             {/* 1. SECTION EDITOR KODE (Code-First) */}
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400">1. Masukkan Kode</label>
-                
-                <div className="flex gap-2">
+              <label className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2 block">1. Masukkan Kode</label>
+              
+              <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-inner group-focus-within:ring-2 ring-pink-500/20 transition">
+                <CodeMirror 
+                  value={code} 
+                  height="250px" 
+                  theme={theme === 'dark' ? dracula : githubLight} 
+                  extensions={[getLanguageExtension(language)]} 
+                  onChange={(val) => setCode(val)}
+                />
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                 <div className="flex gap-2">
                     {/* Tombol Format */}
                     <button 
                         type="button" 
@@ -224,24 +233,12 @@ export default function AddSnippetModal({ isOpen, onClose }) {
                         type="button" 
                         onClick={handleAnalyzeCode}
                         disabled={isAnalyzing}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-purple-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isAnalyzing ? <Loader2 className="animate-spin" size={14}/> : <Sparkles size={14} />}
                         {isAnalyzing ? "Menganalisis..." : "Auto-Detect with AI"}
                     </button>
-                </div>
-              </div>
-              
-              <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-inner group-focus-within:ring-2 ring-pink-500/20 transition">
-                <CodeMirror 
-                  value={code} 
-                  height="250px" 
-                  theme={theme === 'dark' ? dracula : githubLight} 
-                  extensions={[getLanguageExtension(language)]} 
-                  onChange={(val) => setCode(val)}
-                />
-              </div>
-              <div className="text-right mt-1">
+                 </div>
                  <span className={`text-[10px] ${code.length > MAX_CODE_LENGTH ? 'text-red-500' : 'text-gray-400'}`}>
                     {code.length} / {MAX_CODE_LENGTH} chars
                  </span>
@@ -302,8 +299,8 @@ export default function AddSnippetModal({ isOpen, onClose }) {
                       onChange={(e) => setIsPublic(e.target.value === 'true')}
                       className="w-full px-4 py-2 bg-white dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-pink-500/50 dark:text-white focus:outline-none transition cursor-pointer"
                     >
-                      <option value="false">Private (Hanya Saya) 🔒</option>
-                      <option value="true">Public (Masuk Forum) 🌍</option>
+                      <option value="false">Private (Hanya Saya)</option>
+                      <option value="true">Public (Masuk Forum)</option>
                     </select>
                 </div>
             </div>

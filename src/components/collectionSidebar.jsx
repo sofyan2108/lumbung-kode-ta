@@ -145,7 +145,7 @@ export default function CollectionSidebar({ onSelectCollection, currentUserId })
                 }}
               >
                 {/* Icon & Name */}
-                <span className="text-xl flex-shrink-0">{collection.icon}</span>
+                <Folder size={18} className="flex-shrink-0" style={{ color: collection.color }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-800 dark:text-white truncate">
                     {collection.name}

@@ -46,6 +46,27 @@ export async function loginWithEmail(email, password) {
   }
 }
 
+// Register with email/password
+export async function registerWithEmail(email, password, fullName) {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: fullName }
+    }
+  })
+  
+  if (error) throw error
+  
+  return {
+    accessToken: data.session?.access_token,
+    refreshToken: data.session?.refresh_token,
+    user: data.user
+  }
+}
+
 // Fetch user snippets
 export async function fetchMySnippets(options = {}) {
   const supabase = createSupabaseClient()

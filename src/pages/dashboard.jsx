@@ -8,7 +8,7 @@ import { useAlertStore } from '../store/alertStore'
 import CreateCollectionModal from '../components/createCollectionModal'
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Loader2, PlusCircle, Search, Filter, ArrowUpDown, Globe, Pencil, Trash2 } from 'lucide-react'
+import { Loader2, PlusCircle, Search, Filter, ArrowUpDown, Globe, Pencil, Trash2, Folder } from 'lucide-react'
 import { popularLanguages } from '../utils/languageConfig'
 import { useShortcut } from '../hooks/useShortcut'
 
@@ -115,7 +115,11 @@ export default function Dashboard() {
     let result = allSearchResults && searchQuery.trim().length > 2
       ? allSearchResults
       : selectedCollection 
-        ? collectionSnippets 
+        ? collectionSnippets.map(cs => {
+            // Merge latest counts from main snippets store for real-time updates
+            const fresh = snippets.find(s => s.id === cs.id)
+            return fresh ? { ...cs, like_count: fresh.like_count, copy_count: fresh.copy_count, fork_count: fresh.fork_count } : cs
+          })
         : snippets.filter(s => s.user_id === user?.id)
 
     if (selectedLanguage !== 'all') {
@@ -194,7 +198,7 @@ export default function Dashboard() {
                   borderLeft: `4px solid ${activeCollection?.color}`
                 }}
               >
-                <span className="text-2xl">{activeCollection?.icon}</span>
+                <Folder size={24} style={{ color: activeCollection?.color }} />
                 <span>{activeCollection?.name || 'Collection'}</span>
                 
                 {/* Quick Actions */}

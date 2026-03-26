@@ -1,4 +1,4 @@
-import { X, FolderPlus, Check } from 'lucide-react'
+import { X, FolderPlus, Check, Folder } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCollectionStore } from '../store/collectionStore'
 import { useAlertStore } from '../store/alertStore'
@@ -138,7 +138,7 @@ export default function AddToCollectionModal({ isOpen, onClose, snippetId }) {
                     </div>
 
                     {/* Collection Info */}
-                    <span className="text-xl">{collection.icon}</span>
+                    <Folder size={18} style={{ color: collection.color }} />
                     <div className="flex-1 text-left">
                       <p className="font-bold text-sm text-gray-800 dark:text-white">
                         {collection.name}

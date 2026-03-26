@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { 
   Terminal, Package, Zap, BookOpen, Lightbulb, 
   Target, Bug, Copy, Check,
-  Download, Search, Upload, LogIn, LogOut, User,
-  ExternalLink
+  Download, Search, Upload, LogIn, LogOut, User, UserPlus,
+  ExternalLink, List, HelpCircle, CircleCheck
 } from 'lucide-react'
 import AppLayout from '../components/appLayout'
 
@@ -97,28 +97,17 @@ function InstallSection() {
           Instalasi CLI
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Pilih salah satu metode instalasi berikut sesuai kebutuhan Anda.
+          Install Lumbung CLI lewat NPM — cukup satu perintah dan langsung siap digunakan.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border border-pink-200 dark:border-pink-800 rounded-2xl p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-full">RECOMMENDED</span>
-          </div>
-          <h3 className="font-bold text-gray-900 dark:text-white mb-2">Opsi 1: Install dari NPM</h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Cara paling mudah dan cepat.</p>
-          <CodeBlock code="npm install -g lumbung-cli" />
+      <div className="bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-full">DIREKOMENDASIKAN</span>
         </div>
-
-        <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-          <h3 className="font-bold text-gray-900 dark:text-white mb-2">Opsi 2: Install dari Source</h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Untuk developer yang ingin contribute.</p>
-          <CodeBlock code={`git clone https://github.com/sofyan2108/lumbung-kode-ta.git
-cd lumbung-kode-ta/cli
-npm install
-npm link`} />
-        </div>
+        <h3 className="font-bold text-gray-900 dark:text-white mb-2">Install via NPM</h3>
+        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">Membutuhkan Node.js v18 ke atas.</p>
+        <CodeBlock code="npm install -g lumbung-cli" />
       </div>
 
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
@@ -136,7 +125,7 @@ npm link`} />
 // Quick Start section
 function QuickStartSection() {
   const steps = [
-    { num: 1, title: 'Login ke Akun', desc: 'Gunakan email & password yang sama dengan web app.', code: 'lumbung login' },
+    { num: 1, title: 'Buat Akun atau Login', desc: 'Daftar akun baru atau login jika sudah punya akun.', code: '# Daftar akun baru\nlumbung register\n\n# Atau login jika sudah punya akun\nlumbung login' },
     { num: 2, title: 'Upload Snippet Pertama', desc: 'Upload file apapun sebagai snippet.', code: 'lumbung push myfile.js --public' },
     { num: 3, title: 'Lihat Semua Snippet', desc: 'Tampilkan daftar snippet milikmu.', code: 'lumbung list' },
     { num: 4, title: 'Download Snippet', desc: 'Ambil snippet berdasarkan ID.', code: 'lumbung get <snippet-id> --output downloaded.js' },
@@ -199,6 +188,12 @@ function CommandsSection() {
         </h3>
         <div className="grid gap-4">
           <CommandCard
+            icon={UserPlus}
+            title="lumbung register"
+            description="Daftar akun baru Lumbung Kode. CLI akan meminta nama lengkap, email, password, dan konfirmasi password secara interaktif. Setelah berhasil, akun langsung otomatis login — tidak perlu jalankan lumbung login lagi."
+            command={`lumbung register\n\n# Contoh output:\n# ? Full Name: Budi Santoso\n# ? Email: budi@example.com\n# ? Password: ******\n# ? Confirm Password: ******\n# ✓ Account created! Logged in as budi@example.com`}
+          />
+          <CommandCard
             icon={LogIn}
             title="lumbung login"
             description="Login ke akun Lumbung Kode dengan email & password."
@@ -221,8 +216,8 @@ function CommandsSection() {
 
       {/* Upload */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          📤 Upload Snippet
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
+          <Upload size={18} /> Upload Snippet
         </h3>
         <CommandCard
           icon={Upload}
@@ -251,8 +246,8 @@ function CommandsSection() {
 
       {/* Download */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          📥 Download Snippet
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
+          <Download size={18} /> Download Snippet
         </h3>
         <CommandCard
           icon={Download}
@@ -268,8 +263,8 @@ function CommandsSection() {
 
       {/* List */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          📋 List Snippets
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
+          <List size={18} /> List Snippets
         </h3>
         <CommandCard
           icon={Terminal}
@@ -287,8 +282,8 @@ function CommandsSection() {
 
       {/* Search */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2">
-          🔍 Search Snippets
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
+          <Search size={18} /> Search Snippets
         </h3>
         <CommandCard
           icon={Search}
@@ -476,7 +471,7 @@ lumbung push D:/full/path/to/file.js`,
             <h3 className="font-mono text-red-600 dark:text-red-400 mb-2">{issue.error}</h3>
             <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">{issue.desc}</p>
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-3">
-              <p className="text-green-700 dark:text-green-400 text-xs font-bold mb-2">✅ Solusi:</p>
+              <p className="text-green-700 dark:text-green-400 text-xs font-bold mb-2 flex items-center gap-1"><CircleCheck size={14} /> Solusi:</p>
               <CodeBlock code={issue.solution} />
             </div>
           </div>
@@ -484,7 +479,7 @@ lumbung push D:/full/path/to/file.js`,
       </div>
 
       <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-4">
-        <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">🆘 Butuh Bantuan Lebih?</h4>
+        <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center gap-2"><HelpCircle size={18} /> Butuh Bantuan Lebih?</h4>
         <CodeBlock code={`# Help untuk semua command
 lumbung --help
 
@@ -521,7 +516,7 @@ export default function CliDocs() {
   return (
     <AppLayout onSelectCollection={handleSelectCollection}>
       {/* Hero */}
-      <div className="bg-gradient-to-br from-pink-500 to-purple-600 text-white py-10 px-6 rounded-2xl mb-8">
+      <div className="bg-pink-500 text-white py-10 px-6 rounded-2xl mb-8">
         <div className="text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center justify-center p-3 bg-white/20 rounded-full mb-4">
             <Terminal size={24} />
@@ -547,7 +542,7 @@ export default function CliDocs() {
               className="flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-medium transition"
             >
               <Package size={16} />
-              v1.0.4
+              v1.0.5
               <ExternalLink size={14} />
             </a>
           </div>

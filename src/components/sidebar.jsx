@@ -159,7 +159,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
                           }}
                           className="w-full flex items-center gap-2 px-4 py-2 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-all"
                         >
-                          <span>{collection.icon}</span>
+                          <Folder size={16} style={{ color: collection.color }} />
                           <span className="flex-1 text-left truncate font-medium">{collection.name}</span>
                           <span className="text-xs text-gray-400">{collection.snippet_count || 0}</span>
                         </button>

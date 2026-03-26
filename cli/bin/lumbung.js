@@ -4,6 +4,7 @@
  * Lumbung CLI - Command Line Interface for Lumbung Kode
  * 
  * Usage:
+ *   lumbung register           Register a new account
  *   lumbung login              Login to your account
  *   lumbung push <file>        Upload a snippet from file
  *   lumbung get <id>           Fetch a snippet by ID
@@ -16,7 +17,7 @@
 
 import { program } from 'commander'
 import chalk from 'chalk'
-import { login, logout } from '../src/commands/auth.js'
+import { login, logout, register } from '../src/commands/auth.js'
 import { push } from '../src/commands/push.js'
 import { get } from '../src/commands/get.js'
 import { list } from '../src/commands/list.js'
@@ -42,7 +43,7 @@ const banner = `
 program
   .name('lumbung')
   .description('CLI tool for Lumbung Kode - Gudang Snippet Kode Modern')
-    .version('1.0.4')
+    .version('1.0.5')
   .hook('preAction', (thisCommand) => {
     // Only show banner for main help
     if (thisCommand.args.length === 0 && !process.argv.slice(2).length) {
@@ -55,6 +56,12 @@ program
   .command('login')
   .description('Login to your Lumbung Kode account')
   .action(login)
+
+// Register command
+program
+  .command('register')
+  .description('Register a new Lumbung Kode account')
+  .action(register)
 
 // Logout command
 program
