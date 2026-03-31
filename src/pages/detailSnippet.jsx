@@ -445,10 +445,10 @@ export default function DetailSnippet() {
                         type="button" 
                         onClick={handleAnalyzeCode} 
                         disabled={isAnalyzing} 
-                        className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {isAnalyzing ? <Loader2 className="animate-spin" size={14}/> : <Sparkles size={14} />}
-                        {isAnalyzing ? "Analyzing..." : "AI Autofill"}
+                        {isAnalyzing ? "Menganalisis..." : "Metadata Autofill"}
                       </button>
                     </>
                 )}

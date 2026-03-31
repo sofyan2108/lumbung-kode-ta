@@ -187,7 +187,7 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-pastel-dark-border bg-gray-50 dark:bg-white/5">
           <h3 className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-2">
             <Sparkles size={20} className="text-pink-500 animate-pulse" />
-            AI Smart Snippet
+            Tambah Snippet Baru
           </h3>
           <div className="flex items-center gap-2">
              <span className="hidden sm:inline-block text-[10px] font-bold text-gray-400 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded border border-gray-200 dark:border-gray-600">
@@ -215,30 +215,7 @@ export default function AddSnippetModal({ isOpen, onClose }) {
                   onChange={(val) => setCode(val)}
                 />
               </div>
-              <div className="flex justify-between items-center mt-2">
-                 <div className="flex gap-2">
-                    {/* Tombol Format */}
-                    <button 
-                        type="button" 
-                        onClick={handleFormat}
-                        disabled={isFormatting}
-                        className="flex items-center gap-1 text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 px-2 py-1.5 rounded hover:bg-blue-100 dark:hover:bg-blue-900/40 transition disabled:opacity-50"
-                    >
-                        <Wand2 size={12} className={isFormatting ? "animate-spin" : ""} />
-                        Format
-                    </button>
-
-                    {/* Tombol AI Magic */}
-                    <button 
-                        type="button" 
-                        onClick={handleAnalyzeCode}
-                        disabled={isAnalyzing}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-purple-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
-                        {isAnalyzing ? <Loader2 className="animate-spin" size={14}/> : <Sparkles size={14} />}
-                        {isAnalyzing ? "Menganalisis..." : "Auto-Detect with AI"}
-                    </button>
-                 </div>
+              <div className="text-right mt-1">
                  <span className={`text-[10px] ${code.length > MAX_CODE_LENGTH ? 'text-red-500' : 'text-gray-400'}`}>
                     {code.length} / {MAX_CODE_LENGTH} chars
                  </span>
@@ -253,6 +230,19 @@ export default function AddSnippetModal({ isOpen, onClose }) {
             </div>
 
             {/* 2. HASIL GENERATE / MANUAL INPUT */}
+            {/* Tombol AI - muncul setelah divider, langsung di atas form metadata */}
+            <div className="flex justify-end">
+                <button 
+                    type="button" 
+                    onClick={handleAnalyzeCode}
+                    disabled={isAnalyzing}
+                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 text-white rounded-lg text-xs font-bold shadow-md hover:shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                    {isAnalyzing ? <Loader2 className="animate-spin" size={14}/> : <Sparkles size={14} />}
+                    {isAnalyzing ? "Menganalisis..." : "Metadata Autofill"}
+                </button>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Judul */}
                 <div>

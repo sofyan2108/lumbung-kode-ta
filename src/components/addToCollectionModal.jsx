@@ -1,9 +1,9 @@
-import { X, FolderPlus, Check, Folder } from 'lucide-react'
+import { X, FolderPlus, Check, Folder, CirclePlus } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useCollectionStore } from '../store/collectionStore'
 import { useAlertStore } from '../store/alertStore'
 
-export default function AddToCollectionModal({ isOpen, onClose, snippetId }) {
+export default function AddToCollectionModal({ isOpen, onClose, snippetId, onCreateCollection }) {
   const { 
     collections, 
     fetchCollections, 
@@ -97,12 +97,16 @@ export default function AddToCollectionModal({ isOpen, onClose, snippetId }) {
           {collections.length === 0 ? (
             <div className="text-center py-8">
               <FolderPlus size={32} className="mx-auto text-gray-300 dark:text-gray-600 mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 Belum ada collection
               </p>
-              <p className="text-xs text-gray-400">
-                Buat collection dulu di sidebar
-              </p>
+              <button
+                onClick={() => { onClose(); onCreateCollection?.() }}
+                className="mx-auto flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white text-sm font-bold rounded-xl transition shadow-sm"
+              >
+                <CirclePlus size={16} />
+                Buat Collection Baru
+              </button>
             </div>
           ) : (
             <div className="space-y-2">

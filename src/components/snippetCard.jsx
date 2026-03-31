@@ -10,6 +10,7 @@ import { useAuthStore } from '../store/authStore'
 import { useAlertStore } from '../store/alertStore'
 import { getLanguageExtension, getLangColor, getFileExtension } from '../utils/languageConfig'
 import AddToCollectionModal from './addToCollectionModal'
+import CreateCollectionModal from './createCollectionModal'
 
 export default function SnippetCard({ snippet }) {
   const [isCopied, setIsCopied] = useState(false)
@@ -17,6 +18,7 @@ export default function SnippetCard({ snippet }) {
   const [showForkConfirm, setShowForkConfirm] = useState(false)
   const [showDownloadConfirm, setShowDownloadConfirm] = useState(false)
   const [showCollectionModal, setShowCollectionModal] = useState(false)
+  const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false)
   
   const { incrementCopy, toggleLike, forkSnippet, favoriteIds } = useSnippetStore()
   const { showAlert } = useAlertStore()
@@ -326,6 +328,11 @@ export default function SnippetCard({ snippet }) {
         isOpen={showCollectionModal}
         onClose={() => setShowCollectionModal(false)}
         snippetId={snippet.id}
+        onCreateCollection={() => setShowCreateCollectionModal(true)}
+      />
+      <CreateCollectionModal
+        isOpen={showCreateCollectionModal}
+        onClose={() => setShowCreateCollectionModal(false)}
       />
     </>
   )
