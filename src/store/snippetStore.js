@@ -276,41 +276,81 @@ export const useSnippetStore = create((set, get) => ({
     }
   },
 
-  // Full-text search in code content
+  // Hybrid search: FTS for keywords, ilike fallback for code snippets / symbols
   searchSnippetsFullText: async (query, userId = null) => {
     set({ loading: true })
     
+    // Detect if query likely contains code (symbols, brackets, dots, etc.)
+    const hasCodeSymbols = /[(){}[\]=><!;.,'"\\/*+#@$%^&|~`]/.test(query)
+
     try {
-      let queryBuilder = supabase
+      let baseQuery = supabase
         .from('snippets')
         .select('*, profiles(full_name, avatar_url)')
-      
-      // If userId provided, filter by user (for dashboard)
+
       if (userId) {
-        queryBuilder = queryBuilder.eq('user_id', userId)
+        baseQuery = baseQuery.eq('user_id', userId)
       } else {
-        // For explore, only public snippets
-        queryBuilder = queryBuilder.eq('is_public', true)
+        baseQuery = baseQuery.eq('is_public', true)
       }
-      
-      // Apply full-text search
-      const { data, error } = await queryBuilder
-        .textSearch('search_vector', query, {
-          type: 'websearch',
-          config: 'english'
-        })
-        .order('created_at', { ascending: false })
-      
-      if (error) throw error
-      
+
+      let data = []
+      let usedFallback = false
+
+      // Step 1: Try FTS first (fast, ranked) — skip if query has code symbols
+      if (!hasCodeSymbols) {
+        const { data: ftsData, error: ftsError } = await baseQuery
+          .textSearch('search_vector', query, {
+            type: 'websearch',
+            config: 'simple'        // 'simple' = no stop words, no stemming → better for code
+          })
+          .order('created_at', { ascending: false })
+          .limit(50)
+
+        if (!ftsError && ftsData && ftsData.length > 0) {
+          data = ftsData
+        } else {
+          usedFallback = true
+        }
+      } else {
+        usedFallback = true
+      }
+
+      // Step 2: Fallback to ilike substring search (handles symbols & exact code fragments)
+      if (usedFallback) {
+        // Take only the first meaningful segment if query is multi-line
+        const searchTerm = query.trim().split('\n')[0].trim().slice(0, 200)
+
+        // Re-build base query (can't reuse after first await)
+        let fallbackQuery = supabase
+          .from('snippets')
+          .select('*, profiles(full_name, avatar_url)')
+
+        if (userId) {
+          fallbackQuery = fallbackQuery.eq('user_id', userId)
+        } else {
+          fallbackQuery = fallbackQuery.eq('is_public', true)
+        }
+
+        const { data: ilikeData, error: ilikeError } = await fallbackQuery
+          .or(`code.ilike.%${searchTerm}%,title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+          .order('created_at', { ascending: false })
+          .limit(50)
+
+        if (!ilikeError) {
+          data = ilikeData || []
+        }
+      }
+
       set({ loading: false })
-      return data || []
+      return data
     } catch (error) {
-      console.error('Full-text search error:', error)
+      console.error('Search error:', error)
       set({ loading: false })
       return []
     }
   },
+
 
   // Biarkan fetchFavorites untuk backward compatibility jika ada komponen lama yang pakai
   fetchFavorites: async () => {}, 
