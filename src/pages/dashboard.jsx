@@ -31,7 +31,7 @@ export default function Dashboard() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const searchInputRef = useRef(null)
-  const { getCollectionSnippets, collections, deleteCollection } = useCollectionStore()
+  const { getCollectionSnippets, collections, deleteCollection, removeSnippetFromCollection } = useCollectionStore()
 
   // Get active collection details
   const activeCollection = collections.find(c => c.id === selectedCollection)
@@ -183,6 +183,14 @@ export default function Dashboard() {
     }
   }
 
+  const handleRemoveSnippetFromCollection = async (snippetId) => {
+    await removeSnippetFromCollection(snippetId, selectedCollection)
+    // Refresh collection snippets
+    const updated = await getCollectionSnippets(selectedCollection)
+    setCollectionSnippets(updated)
+    showAlert('success', 'Berhasil', 'Snippet dihapus dari collection.')
+  }
+
   return (
     <AppLayout onSelectCollection={handleSelectCollection}>
       <div className="mb-8">
@@ -321,7 +329,12 @@ export default function Dashboard() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredSnippets.map((snippet) => (
-             <SnippetCard key={snippet.id} snippet={snippet} />
+             <SnippetCard 
+               key={snippet.id} 
+               snippet={snippet}
+               collectionId={selectedCollection || undefined}
+               onRemoveFromCollection={selectedCollection ? handleRemoveSnippetFromCollection : undefined}
+             />
           ))}
         </div>
       )}

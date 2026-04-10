@@ -1,4 +1,4 @@
-import { Copy, Tag, Check, Globe, Lock, User as UserIcon, Heart, GitFork, X, Download, FolderPlus } from 'lucide-react'
+import { Copy, Tag, Check, Globe, Lock, User as UserIcon, Heart, GitFork, X, Download, FolderPlus, FolderMinus } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CodeMirror from '@uiw/react-codemirror'
@@ -12,11 +12,13 @@ import { getLanguageExtension, getLangColor, getFileExtension } from '../utils/l
 import AddToCollectionModal from './addToCollectionModal'
 import CreateCollectionModal from './createCollectionModal'
 
-export default function SnippetCard({ snippet }) {
+export default function SnippetCard({ snippet, collectionId, onRemoveFromCollection }) {
   const [isCopied, setIsCopied] = useState(false)
   const [forkLoading, setForkLoading] = useState(false)
+  const [removeLoading, setRemoveLoading] = useState(false)
   const [showForkConfirm, setShowForkConfirm] = useState(false)
   const [showDownloadConfirm, setShowDownloadConfirm] = useState(false)
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false)
   const [showCollectionModal, setShowCollectionModal] = useState(false)
   const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false)
   
@@ -93,6 +95,18 @@ export default function SnippetCard({ snippet }) {
         showAlert('error', 'Gagal Fork', error.message)
     } finally {
         setForkLoading(false)
+    }
+  }
+
+  const handleRemoveFromCollection = async () => {
+    setShowRemoveConfirm(false)
+    setRemoveLoading(true)
+    try {
+        if (onRemoveFromCollection) await onRemoveFromCollection(snippet.id)
+    } catch (error) {
+        showAlert('error', 'Gagal', 'Gagal menghapus snippet dari collection.')
+    } finally {
+        setRemoveLoading(false)
     }
   }
 
@@ -174,7 +188,18 @@ export default function SnippetCard({ snippet }) {
                 </button>
             )}
 
-            {isOwner && (
+            {isOwner && collectionId && (
+                <button 
+                    onClick={() => setShowRemoveConfirm(true)}
+                    disabled={removeLoading}
+                    className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 disabled:opacity-50"
+                    title="Hapus dari Collection ini"
+                >
+                    <FolderMinus size={18} className={removeLoading ? 'animate-pulse' : ''} />
+                </button>
+            )}
+
+            {isOwner && !collectionId && (
                 <button 
                     onClick={() => setShowCollectionModal(true)}
                     className="p-2 text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all duration-300"
@@ -278,6 +303,45 @@ export default function SnippetCard({ snippet }) {
                         className="flex-1 py-2.5 rounded-xl font-bold text-white bg-purple-500 hover:bg-purple-600 shadow-lg shadow-purple-500/30 transition flex items-center justify-center gap-2"
                     >
                         <GitFork size={18} /> Ya, Fork
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* MODAL KONFIRMASI HAPUS DARI COLLECTION */}
+      {showRemoveConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-pastel-dark-surface w-full max-w-sm rounded-2xl shadow-2xl border border-gray-100 dark:border-pastel-dark-border p-6 transform transition-all animate-in zoom-in-95 duration-200">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-lg text-gray-800 dark:text-white flex items-center gap-2">
+                        <FolderMinus className="text-red-500" size={20} />
+                        Hapus dari Collection?
+                    </h3>
+                    <button 
+                        onClick={() => setShowRemoveConfirm(false)}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+                
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+                    Snippet <strong>"{snippet.title}"</strong> akan dihapus dari collection ini. Snippet tidak akan terhapus secara permanen.
+                </p>
+                
+                <div className="flex gap-3">
+                    <button 
+                        onClick={() => setShowRemoveConfirm(false)}
+                        className="flex-1 py-2.5 rounded-xl font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition"
+                    >
+                        Batal
+                    </button>
+                    <button 
+                        onClick={handleRemoveFromCollection}
+                        className="flex-1 py-2.5 rounded-xl font-bold text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/30 transition flex items-center justify-center gap-2"
+                    >
+                        <FolderMinus size={18} /> Hapus
                     </button>
                 </div>
             </div>
