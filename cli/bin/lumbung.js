@@ -23,17 +23,21 @@ import { get } from '../src/commands/get.js'
 import { list } from '../src/commands/list.js'
 import { search } from '../src/commands/search.js'
 import { getConfig } from '../src/lib/config.js'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
+const { version } = require('../package.json')
 
 // ASCII Art Banner
 const banner = `
 ╔════════════════════════════════════════════════════════════════════════╗
 ║                                                                        ║
-║    ██╗     ██╗   ██╗███╗   ███╗██████╗ ██╗   ██╗███╗   ██╗ ██████╗     ║
-║    ██║     ██║   ██║████╗ ████║██╔══██╗██║   ██║████╗  ██║██╔════╝     ║
-║    ██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║██╔██╗ ██║██║  ███╗    ║
-║    ██║     ██║   ██║██║╚██╔╝██║██╔══██╗██║   ██║██║╚██╗██║██║   ██║    ║
-║    ███████╗╚██████╔╝██║ ╚═╝ ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝    ║
-║    ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚══════╝    ║
+║    ██╗     ██╗   ██╗███╗   ███╗██████╗ ██╗   ██╗███╗   ██╗ ██████╗    ║
+║    ██║     ██║   ██║████╗ ████║██╔══██╗██║   ██║████╗  ██║██╔════╝    ║
+║    ██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║██╔██╗ ██║██║  ███╗   ║
+║    ██║     ██║   ██║██║╚██╔╝██║██╔══██╗██║   ██║██║╚██╗██║██║   ██║   ║
+║    ███████╗╚██████╔╝██║ ╚═╝ ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝   ║
+║    ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚══════╝   ║
 ║                                                                        ║
 ║                   Gudang Snippet Kode Modern - CLI Tool                ║
 ║                                                                        ║
@@ -43,7 +47,7 @@ const banner = `
 program
   .name('lumbung')
   .description('CLI tool for Lumbung Kode - Gudang Snippet Kode Modern')
-    .version('1.0.5')
+  .version(version)
   .hook('preAction', (thisCommand) => {
     // Only show banner for main help
     if (thisCommand.args.length === 0 && !process.argv.slice(2).length) {
@@ -78,6 +82,9 @@ program
   .option('-d, --description <description>', 'Snippet description')
   .option('--tags <tags>', 'Comma-separated tags')
   .option('--public', 'Make snippet public', false)
+  .option('--dependencies <json>', 'JSON array of dependencies, e.g. \'["react","zustand"]\'')
+  .option('--usage <example>', 'Usage example for the snippet')
+  .option('--docs <url>', 'Documentation URL')
   .action(push)
 
 // Get command
@@ -123,6 +130,3 @@ program
 
 // Parse and execute
 program.parse()
-
-
-

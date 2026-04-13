@@ -1,11 +1,11 @@
 {
   "name": "lumbung-cli",
-  "version": "1.0.5",
+  "version": "2.0.1",
   "description": "CLI tool for Lumbung Kode - Gudang Snippet Kode Modern",
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "lumbung": "./bin/lumbung.js"
+    "lumbung": "bin/lumbung.js"
   },
   "scripts": {
     "start": "node bin/lumbung.js",
@@ -24,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sofyan2108/lumbung-kode-ta.git"
+    "url": "git+https://github.com/sofyan2108/lumbung-kode-ta.git"
   },
   "homepage": "https://github.com/sofyan2108/lumbung-kode-ta#readme",
   "dependencies": {
