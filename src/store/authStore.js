@@ -8,10 +8,24 @@ export const useAuthStore = create((set, get) => ({
   // Cek sesi saat aplikasi dibuka
   checkUser: async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      set({ user: session?.user || null, loading: false })
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      if (sessionError || !session) {
+        set({ user: null, loading: false })
+        return
+      }
+
+      // Validasi token ke server untuk mencegah modifikasi Local Storage
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError || !user) {
+        await supabase.auth.signOut()
+        set({ user: null, loading: false })
+      } else {
+        set({ user: user, loading: false })
+      }
     } catch (error) {
-      set({ loading: false })
+      set({ user: null, loading: false })
     }
   },
 
