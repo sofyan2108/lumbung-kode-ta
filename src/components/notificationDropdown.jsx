@@ -84,13 +84,9 @@ export default function NotificationDropdown({ isOpen, onClose }) {
                     }`}
                 >
                     <div className="mt-1 flex-shrink-0 relative">
-                        {notif.actor?.avatar_url ? (
-                            <img src={notif.actor.avatar_url} className="w-9 h-9 rounded-full object-cover border border-gray-200" alt="avatar" />
-                        ) : (
-                            <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500">
-                                {notif.actor?.full_name?.charAt(0) || 'U'}
-                            </div>
-                        )}
+                        <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500">
+                            {notif.actor?.full_name?.charAt(0) || 'U'}
+                        </div>
                         <div className="absolute top-5 -left-1 w-5 h-5 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700">
                             {getIcon(notif.type)}
                         </div>

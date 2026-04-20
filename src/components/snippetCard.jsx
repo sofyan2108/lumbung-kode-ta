@@ -121,11 +121,7 @@ export default function SnippetCard({ snippet, collectionId, onRemoveFromCollect
             {!isOwner && snippet.profiles && (
                 <Link to={`/user/${snippet.user_id}`} className="flex items-center gap-2 mb-2 group/author w-fit">
                     <div className="w-5 h-5 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center overflow-hidden group-hover/author:ring-2 ring-pink-500 transition">
-                        {snippet.profiles.avatar_url ? (
-                            <img src={snippet.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover"/>
-                        ) : (
-                            <UserIcon size={12} className="text-pink-500"/>
-                        )}
+                        <UserIcon size={12} className="text-pink-500"/>
                     </div>
                     <span className="text-xs font-bold text-gray-600 dark:text-gray-300 group-hover/author:text-pink-500 transition">
                         {snippet.profiles.full_name || 'Anonymous'}

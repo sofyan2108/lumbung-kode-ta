@@ -77,7 +77,6 @@ export const useAuthStore = create((set, get) => ({
     const { data: { user: updatedUser }, error: userError } = await supabase.auth.updateUser({
       data: { 
         full_name: updates.full_name, 
-        avatar_url: updates.avatar_url,
         website: updates.website
       }
     })

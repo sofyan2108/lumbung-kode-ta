@@ -11,14 +11,12 @@ export default function EditProfileModal({ isOpen, onClose, currentProfile }) {
   // State Form
   const [fullName, setFullName] = useState('')
   const [website, setWebsite] = useState('')
-  const [avatarUrl, setAvatarUrl] = useState('')
 
   // Isi form dengan data yang ada saat modal dibuka
   useEffect(() => {
     if (currentProfile) {
       setFullName(currentProfile.full_name || '')
       setWebsite(currentProfile.website || '')
-      setAvatarUrl(currentProfile.avatar_url || '')
     }
   }, [currentProfile, isOpen])
 
@@ -31,7 +29,6 @@ export default function EditProfileModal({ isOpen, onClose, currentProfile }) {
       await updateProfile({
         full_name: fullName,
         website: website,
-        avatar_url: avatarUrl,
         updated_at: new Date(),
       })
       
@@ -67,33 +64,6 @@ export default function EditProfileModal({ isOpen, onClose, currentProfile }) {
         <div className="p-6">
           <form id="profile-form" onSubmit={handleSubmit} className="space-y-4">
             
-            {/* Avatar Preview & Input */}
-            <div className="flex flex-col items-center gap-4 mb-4">
-                <div className="w-20 h-20 rounded-full bg-pink-100 dark:bg-pink-900/30 overflow-hidden ring-4 ring-white dark:ring-gray-700 shadow-lg">
-                    {avatarUrl ? (
-                        <img src={avatarUrl} alt="Preview" className="w-full h-full object-cover" />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center text-pink-500">
-                            <User size={32} />
-                        </div>
-                    )}
-                </div>
-                <div className="w-full">
-                    <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1 ml-1">Avatar URL</label>
-                    <div className="relative">
-                        <Camera className="absolute left-3 top-2.5 text-gray-400" size={16} />
-                        <input 
-                            type="text" 
-                            placeholder="https://example.com/foto.jpg"
-                            value={avatarUrl}
-                            onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-pink-500/50 dark:text-white focus:outline-none transition text-sm"
-                        />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-1 ml-1">Gunakan link gambar langsung (JPG/PNG).</p>
-                </div>
-            </div>
-
             {/* Nama Lengkap */}
             <div>
               <label className="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-1 ml-1">Nama Lengkap</label>

@@ -15,7 +15,7 @@ export const useNotificationStore = create((set, get) => ({
       .from('notifications')
       .select(`
         *,
-        actor:profiles!actor_id(full_name, avatar_url),
+        actor:profiles!actor_id(full_name),
         snippet:snippets(title)
       `)
       .eq('recipient_id', user.id)
@@ -80,7 +80,7 @@ export const useNotificationStore = create((set, get) => ({
                     .from('notifications')
                     .select(`
                         *,
-                        actor:profiles!actor_id(full_name, avatar_url),
+                        actor:profiles!actor_id(full_name),
                         snippet:snippets(title)
                     `)
                     .eq('id', payload.new.id)

@@ -57,7 +57,7 @@ export const useCollectionStore = create((set, get) => ({
           snippet_id,
           snippets (
             *,
-            profiles (full_name, avatar_url)
+            profiles (full_name)
           )
         `)
         .eq('collection_id', collectionId)

@@ -71,11 +71,7 @@ export default function UserProfile() {
             {/* Avatar Besar */}
             <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-pink-400 to-pastel-primary p-1 shadow-xl relative z-10">
                 <div className="w-full h-full rounded-full bg-white dark:bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
-                    {currentProfile?.avatar_url ? (
-                        <img src={currentProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                        <span className="text-4xl font-bold text-gray-400">{currentProfile?.full_name?.charAt(0) || 'U'}</span>
-                    )}
+                    <span className="text-4xl font-bold text-gray-400">{currentProfile?.full_name?.charAt(0) || 'U'}</span>
                 </div>
             </div>
 

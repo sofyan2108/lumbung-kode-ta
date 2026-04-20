@@ -336,11 +336,7 @@ export default function DetailSnippet() {
               
               <Link to={`/user/${snippet.user_id}`} className="flex items-center gap-2 group/author hover:text-pink-500 transition-colors bg-white dark:bg-white/5 px-3 py-1.5 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm">
                 <div className="w-5 h-5 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center overflow-hidden group-hover/author:ring-2 ring-pink-500 transition">
-                    {snippet.profiles?.avatar_url ? (
-                        <img src={snippet.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover"/>
-                    ) : (
-                        <User size={12} className="text-pink-500"/>
-                    )}
+                    <User size={12} className="text-pink-500"/>
                 </div>
                 <span className="font-medium text-gray-700 dark:text-gray-300 group-hover/author:text-pink-500 transition">
                     {snippet.profiles?.full_name || 'Anonymous'}

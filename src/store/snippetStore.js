@@ -18,7 +18,7 @@ export const useSnippetStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('snippets')
-      .select('*, profiles(full_name, avatar_url)')
+      .select('*, profiles(full_name)')
       .order('created_at', { ascending: false })
     
     if (error) console.error(error)
@@ -31,7 +31,7 @@ export const useSnippetStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('snippets')
-      .select('*, profiles(full_name, avatar_url)')
+      .select('*, profiles(full_name)')
       .eq('is_public', true)
       .order('created_at', { ascending: false })
     
@@ -46,7 +46,7 @@ export const useSnippetStore = create((set, get) => ({
     set({ loading: true })
     const { data, error } = await supabase
       .from('snippets')
-      .select('*, profiles(full_name, avatar_url)')
+      .select('*, profiles(full_name)')
       .eq('id', id)
       .single()
 
@@ -74,7 +74,7 @@ export const useSnippetStore = create((set, get) => ({
 
         const { data: snippetsData, error: snippetsError } = await supabase
             .from('snippets')
-            .select('*, profiles(full_name, avatar_url)')
+            .select('*, profiles(full_name)')
             .eq('user_id', userId)
             .eq('is_public', true)
             .order('created_at', { ascending: false })
@@ -286,7 +286,7 @@ export const useSnippetStore = create((set, get) => ({
     try {
       let baseQuery = supabase
         .from('snippets')
-        .select('*, profiles(full_name, avatar_url)')
+        .select('*, profiles(full_name)')
 
       if (userId) {
         baseQuery = baseQuery.eq('user_id', userId)
@@ -324,7 +324,7 @@ export const useSnippetStore = create((set, get) => ({
         // Re-build base query (can't reuse after first await)
         let fallbackQuery = supabase
           .from('snippets')
-          .select('*, profiles(full_name, avatar_url)')
+          .select('*, profiles(full_name)')
 
         if (userId) {
           fallbackQuery = fallbackQuery.eq('user_id', userId)
