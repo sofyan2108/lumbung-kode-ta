@@ -69,7 +69,7 @@ export default function UserProfile() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
             {/* Avatar Besar */}
-            <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-pink-400 to-pastel-primary p-1 shadow-xl relative z-10">
+            <div className="w-32 h-32 rounded-full bg-pink-400 p-1 shadow-xl relative z-10">
                 <div className="w-full h-full rounded-full bg-white dark:bg-[#1a1a1a] flex items-center justify-center overflow-hidden">
                     <span className="text-4xl font-bold text-gray-400">{currentProfile?.full_name?.charAt(0) || 'U'}</span>
                 </div>
@@ -94,7 +94,7 @@ export default function UserProfile() {
                 </div>
                 
                 {isMe && (
-                    <span className="inline-block px-3 py-1 bg-pastel-primary/10 text-pastel-primary rounded-full text-xs font-bold mb-4">
+                    <span className="inline-block px-3 py-1 bg-blue-200 text-blue-900 rounded-full text-xs font-bold mb-4">
                         It's You!
                     </span>
                 )}

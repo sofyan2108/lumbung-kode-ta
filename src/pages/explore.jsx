@@ -95,12 +95,9 @@ export default function Explore() {
 
   return (
     <AppLayout onSelectCollection={handleSelectCollection}>
-      <div className="mb-8 text-center max-w-2xl mx-auto">
-        <div className="inline-flex items-center justify-center p-3 bg-pastel-primary/10 text-pastel-primary rounded-full mb-4">
-            <Globe size={24} />
-        </div>
+      <div className="mb-5 text-center max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-pastel-text dark:text-white mb-2">
-            Community Explore
+            Explore
         </h1>
         <p className="text-pastel-muted dark:text-gray-400">
             Temukan inspirasi kode yang dibagikan developer lain.
@@ -108,7 +105,7 @@ export default function Explore() {
       </div>
 
       {/* Search Bar Besar */}
-      <div className="max-w-xl mx-auto mb-12 relative group">
+      <div className="max-w-xl mx-auto mb-8 relative group">
          <div className="absolute inset-0 bg-pastel-primary/20 dark:bg-pastel-primary-dark/10 blur-xl rounded-full opacity-50 group-hover:opacity-100 transition duration-500"></div>
          <div className="relative">
             <Search className="absolute left-5 top-4 text-gray-400" size={20} />
