@@ -3,12 +3,17 @@ import SnippetCard from '../components/snippetCard'
 import { useSnippetStore } from '../store/snippetStore'
 import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Loader2, Globe, Search } from 'lucide-react'
+import { Loader2, Globe, Search, Filter, ArrowUpDown } from 'lucide-react'
+import { popularLanguages } from '../utils/languageConfig'
+
 
 export default function Explore() {
   const { exploreSnippets, fetchExploreSnippets, fetchMyFavoriteIds, searchSnippetsFullText, loading } = useSnippetStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [allSearchResults, setAllSearchResults] = useState(null)
+  const [selectedLanguage, setSelectedLanguage] = useState('all')
+  const [sortOption, setSortOption] = useState('newest')
+
   const navigate = useNavigate()
 
   // Handler for collection click: navigate to Dashboard
@@ -39,13 +44,33 @@ export default function Explore() {
     return () => clearTimeout(debounce)
   }, [searchQuery, searchSnippetsFullText])
 
-  // Filter Search
+  const availableLanguages = useMemo(() => {
+    const langs = exploreSnippets.map(s => s.language)
+    const seen = new Set()
+    const result = []
+    langs.forEach(lang => {
+        const lower = lang.toLowerCase()
+        if (!seen.has(lower)) {
+            seen.add(lower)
+            const prettyName = popularLanguages.find(p => p.toLowerCase() === lower) || lang
+            result.push(prettyName)
+        }
+    })
+    return ['all', ...result]
+  }, [exploreSnippets])
+
+  // Filter & Sort Logic
   const filteredSnippets = useMemo(() => {
     // Use search results if searching (query >= 3 chars), otherwise use all explore snippets
     let result = allSearchResults && searchQuery.trim().length > 2
       ? allSearchResults
       : exploreSnippets
     
+    // Filter by language
+    if (selectedLanguage !== 'all') {
+      result = result.filter(s => s.language.toLowerCase() === selectedLanguage.toLowerCase())
+    }
+
     // Additional title/tag filter for short queries (1-2 chars)
     if (searchQuery.trim() && searchQuery.trim().length <= 2) {
       const q = searchQuery.toLowerCase()
@@ -55,9 +80,18 @@ export default function Explore() {
         s.language.toLowerCase().includes(q)
       )
     }
+
+    // Sort
+    const sortedResult = [...result].sort((a, b) => {
+      if (sortOption === 'newest') return new Date(b.created_at) - new Date(a.created_at)
+      if (sortOption === 'oldest') return new Date(a.created_at) - new Date(b.created_at)
+      if (sortOption === 'popular') return (b.copy_count || 0) - (a.copy_count || 0)
+      return 0
+    })
     
-    return result
-  }, [exploreSnippets, searchQuery, allSearchResults])
+    return sortedResult
+  }, [exploreSnippets, searchQuery, allSearchResults, selectedLanguage, sortOption])
+
 
   return (
     <AppLayout onSelectCollection={handleSelectCollection}>
@@ -69,7 +103,7 @@ export default function Explore() {
             Community Explore
         </h1>
         <p className="text-pastel-muted dark:text-gray-400">
-            Temukan inspirasi dari ribuan kode yang dibagikan developer lain.
+            Temukan inspirasi kode yang dibagikan developer lain.
         </p>
       </div>
 
@@ -92,6 +126,43 @@ export default function Explore() {
             )}
          </div>
       </div>
+
+      {/* Filters */}
+      <div className="max-w-xl mx-auto mb-8 flex flex-wrap gap-3 justify-center">
+            <div className="relative min-w-[140px] group">
+                <Filter className="absolute left-3 top-3 text-gray-400 group-hover:text-pastel-primary transition" size={16} />
+                <select 
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    className="w-full pl-9 pr-8 py-3 bg-white dark:bg-pastel-dark-surface rounded-2xl shadow-sm cursor-pointer focus:shadow-md outline-none text-sm font-medium text-gray-600 dark:text-gray-300 appearance-none transition-all hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-100 dark:border-gray-700"
+                >
+                    <option value="all">Semua Bahasa</option>
+                    {availableLanguages.filter(l => l !== 'all').map(lang => (
+                        <option key={lang} value={lang}>{lang}</option>
+                    ))}
+                </select>
+                <div className="absolute right-3 top-3.5 pointer-events-none text-gray-400">
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+            </div>
+
+            <div className="relative min-w-[160px] group">
+                <ArrowUpDown className="absolute left-3 top-3 text-gray-400 group-hover:text-pastel-primary transition" size={16} />
+                <select 
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                    className="w-full pl-9 pr-8 py-3 bg-white dark:bg-pastel-dark-surface rounded-2xl shadow-sm cursor-pointer focus:shadow-md outline-none text-sm font-medium text-gray-600 dark:text-gray-300 appearance-none transition-all hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-100 dark:border-gray-700"
+                >
+                    <option value="newest">Waktu: Terbaru</option>
+                    <option value="oldest">Waktu: Terlama</option>
+                    <option value="popular">Populer (Copy)</option>
+                </select>
+                <div className="absolute right-3 top-3.5 pointer-events-none text-gray-400">
+                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+            </div>
+      </div>
+
 
       {/* Content Grid */}
       {loading ? (
