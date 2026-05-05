@@ -58,3 +58,8 @@ temp/
 # Documentation and data files
 *.md
 *.csv
+
+# Test files
+src/test/push.test.js
+src/test/checkUser.test.js
+

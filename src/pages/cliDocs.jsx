@@ -542,7 +542,7 @@ export default function CliDocs() {
               className="flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-medium transition"
             >
               <Package size={16} />
-              v1.0.5
+              v2.0.1
               <ExternalLink size={14} />
             </a>
           </div>
