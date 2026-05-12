@@ -1,6 +1,6 @@
 {
   "name": "lumbung-cli",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "CLI tool for Lumbung Kode - Gudang Snippet Kode Modern",
   "type": "module",
   "main": "src/index.js",

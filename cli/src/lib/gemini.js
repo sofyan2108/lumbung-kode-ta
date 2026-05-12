@@ -82,10 +82,47 @@ function parseGeminiJson(rawText) {
 }
 
 // --------------------------------------------------------------------------
+// Helper: local pre-check heuristik SEBELUM memanggil AI
+// Menangkap konten sampah yang sangat jelas tanpa buang quota API
+// --------------------------------------------------------------------------
+function localPreCheck(content) {
+  const text = content.trim()
+
+  // Terlalu pendek (kurang dari 20 karakter) → pasti bukan kode berarti
+  if (text.length < 20) {
+    return { pass: false, reason: 'Konten terlalu pendek untuk menjadi kode yang valid.' }
+  }
+
+  // Deteksi pola kode teknis yang umum
+  const codeSignals = [
+    /[{}[\]();]/, // kurung kode
+    /\b(function|const|let|var|def|class|import|export|return|if|else|for|while)\b/,
+    /\b(public|private|static|void|int|string|bool|async|await)\b/,
+    /[=><+\-*/%!&|^~]/, // operator
+    /<\w+[\s/>]/, // HTML/XML tag
+    /^\s*#[\w\s]/, // shebang atau comment python/bash
+    /:\s*\w+/, // YAML / TypeScript type annotation
+    /\w+\s*\(.*\)/, // function call
+  ]
+  const hasCodeSignals = codeSignals.some((pattern) => pattern.test(text))
+  if (hasCodeSignals) return { pass: true, reason: '' }
+
+  // Cek karakter rasio: kode biasanya punya banyak simbol
+  const symbolCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length
+  const symbolRatio = symbolCount / text.length
+  if (symbolRatio > 0.08) return { pass: true, reason: '' }
+
+  // Tidak ada sinyal kode sama sekali → suspect
+  // Serahkan ke AI untuk keputusan final (jangan blokir di sini)
+  return { pass: null, reason: '' } // null = tidak yakin, teruskan ke AI
+}
+
+// --------------------------------------------------------------------------
 // Fungsi Utama: AI Quality Gate — Validasi Konten Sebelum Upload
 // --------------------------------------------------------------------------
 /**
  * Memvalidasi apakah konten adalah kode/file teknis yang valid.
+ * Urutan: local pre-check → AI validation
  *
  * @param {string} content  - Konten file yang akan diupload
  * @returns {Promise<{
@@ -97,6 +134,18 @@ function parseGeminiJson(rawText) {
  * }>}
  */
 export async function validateCodeWithAI(content) {
+  // ── Local Pre-Check (tanpa API) ─────────────────────────────────────────
+  const preCheck = localPreCheck(content)
+  if (preCheck.pass === false) {
+    return {
+      isValid: false,
+      reason: preCheck.reason,
+      confidenceScore: 0.0,
+      metadata: { title: '', language: '' },
+      skipped: false
+    }
+  }
+
   const apiKey = getApiKey()
 
   // Jika tidak ada API Key, lewati validasi (graceful degradation)
@@ -106,7 +155,7 @@ export async function validateCodeWithAI(content) {
       reason: '',
       confidenceScore: 1.0,
       metadata: { title: '', language: '' },
-      skipped: true, // Flag: validasi AI tidak dijalankan
+      skipped: true,
     }
   }
 
@@ -115,43 +164,33 @@ export async function validateCodeWithAI(content) {
   const model = genAI.getGenerativeModel({ model: modelName })
 
   const prompt = `
-Kamu adalah asisten validasi kode tingkat lanjut untuk platform penyimpanan snippet kode bernama "Lumbung Kode".
+Kamu adalah sistem validasi KETAT untuk platform penyimpanan snippet kode "Lumbung Kode".
+Tugasmu SATU-SATUNYA: tentukan apakah konten di bawah adalah kode/file teknis yang LAYAK disimpan.
 
-Tugasmu: Periksa apakah konten di bawah ini adalah kode program atau file teknis yang VALID dan layak disimpan.
+TOLAK (isValid = false) konten seperti ini:
+- Kalimat bahasa Indonesia biasa: "ini adalah teks dummy", "halo apa kabar", "harusnya gabisa upload"
+- Kalimat bahasa Inggris biasa: "this is a test", "hello world" (tanpa struktur kode)
+- Teks acak: "asdf qwerty zxcv", "aaabbbccc"
+- Lorem ipsum dan sejenisnya
+- Catatan atau komentar saja tanpa kode (misal: "nanti diisi", "TODO")
+- Kalimat yang mendeskripsikan kode tapi bukan kode itu sendiri
 
-KRITERIA PENOLAKAN (isValid = false):
-- Teks acak / gibberish (contoh: "asdfjkl qwerty zxcv")
-- Teks dummy / placeholder (contoh: "lorem ipsum", "tes 123", "hello world" tanpa konteks kode)
-- Kalimat percakapan biasa / bukan kode (contoh: "halo apa kabar", "ini adalah teks biasa")
-- Fragmen kode yang terlalu pendek dan tidak bermakna (kurang dari 3 baris logika nyata)
-- Konten yang jelas bukan kode, konfigurasi, atau dokumentasi teknis
+TERIMA (isValid = true) konten seperti ini:
+- Kode pemrograman (Python, JS, Java, C++, PHP, dll.) dengan sintaks yang benar
+- File konfigurasi: JSON valid, YAML, Dockerfile, .env, nginx.conf
+- Query SQL: SELECT, INSERT, UPDATE, CREATE TABLE
+- Shell script: bash, powershell, bat
+- Markup dengan logika: HTML dengan JS, XML, JSX
+- Markdown HANYA jika memiliki blok kode (``` ... ```)
 
-KRITERIA PENERIMAAN (isValid = true):
-- Struktur bahasa pemrograman yang benar (variabel, fungsi, loop, kondisi, class, dll.)
-- File konfigurasi yang valid (JSON, YAML, TOML, Dockerfile, .env, nginx.conf, dll.)
-- Dokumentasi teknis (Markdown dengan blok kode, README yang berisi instruksi teknis)
-- Query database (SQL, MongoDB query, dll.)
-- Shell script / command-line script
-- Template markup (HTML, XML, SVG dengan logika)
+PENTING: Jika ragu antara "kalimat biasa" vs "kode", TOLAK saja (isValid = false).
 
-FORMAT OUTPUT: Kembalikan HANYA JSON murni tanpa blok markdown, persis seperti ini:
-{
-  "isValid": true,
-  "reason": "",
-  "confidenceScore": 0.95,
-  "metadata": {
-    "title": "Judul singkat deskriptif (maks 60 karakter)",
-    "language": "bahasa_pemrograman_lowercase"
-  }
-}
+KEMBALIKAN HANYA JSON INI (tanpa markdown, tanpa penjelasan):
+{"isValid":BOOLEAN,"reason":"ALASAN_JIKA_DITOLAK","confidenceScore":ANGKA_0_SAMPAI_1,"metadata":{"title":"JUDUL_SINGKAT","language":"bahasa_lowercase"}}
 
-Jika isValid false, isi "reason" dengan penjelasan singkat dalam Bahasa Indonesia mengapa konten ditolak.
-Jika isValid true, kosongkan "reason" (string kosong "").
-confidenceScore adalah tingkat keyakinan kamu (0.0 sampai 1.0).
-
-Konten untuk divalidasi:
+Konten:
 ---
-${content.slice(0, 8000)}
+${content.slice(0, 6000)}
 ---
   `.trim()
 
@@ -159,13 +198,16 @@ ${content.slice(0, 8000)}
     const rawText = await generateWithRetry(model, prompt)
     const result = parseGeminiJson(rawText)
 
+    // Validasi tipe data hasil — jika AI mengembalikan string "true"/"false"
+    const isValid = result.isValid === true || result.isValid === 'true'
+    const score = typeof result.confidenceScore === 'number'
+      ? Math.min(1, Math.max(0, result.confidenceScore))
+      : (isValid ? 0.8 : 0.2)
+
     return {
-      isValid: typeof result.isValid === 'boolean' ? result.isValid : true,
+      isValid,
       reason: result.reason || '',
-      confidenceScore:
-        typeof result.confidenceScore === 'number'
-          ? Math.min(1, Math.max(0, result.confidenceScore))
-          : 0.5,
+      confidenceScore: score,
       metadata: {
         title: result.metadata?.title || '',
         language: result.metadata?.language || '',
@@ -173,7 +215,8 @@ ${content.slice(0, 8000)}
       skipped: false,
     }
   } catch (err) {
-    // Jika Gemini gagal merespons, jangan blokir upload — lempar error agar push.js bisa handle
+    // Jika Gemini gagal merespons, lempar error agar push.js bisa handle
     throw new Error(`AI Quality Gate error: ${err.message}`)
   }
 }
+
