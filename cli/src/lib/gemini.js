@@ -181,7 +181,7 @@ TERIMA (isValid = true) konten seperti ini:
 - Query SQL: SELECT, INSERT, UPDATE, CREATE TABLE
 - Shell script: bash, powershell, bat
 - Markup dengan logika: HTML dengan JS, XML, JSX
-- Markdown HANYA jika memiliki blok kode (``` ... ```)
+- Markdown HANYA jika memiliki blok kode (\`\`\` ... \`\`\`)
 
 PENTING: Jika ragu antara "kalimat biasa" vs "kode", TOLAK saja (isValid = false).
 
