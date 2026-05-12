@@ -4,13 +4,15 @@
  * Lumbung CLI - Command Line Interface for Lumbung Kode
  * 
  * Usage:
- *   lumbung register           Register a new account
- *   lumbung login              Login to your account
- *   lumbung push <file>        Upload a snippet from file
- *   lumbung get <id>           Fetch a snippet by ID
- *   lumbung list               List your snippets
- *   lumbung search <query>     Search snippets
- *   lumbung logout             Logout from your account
+ *   lumbung register                      Register a new account
+ *   lumbung login                         Login to your account
+ *   lumbung push <file>                   Upload a snippet from file
+ *   lumbung get <id>                      Fetch a snippet by ID
+ *   lumbung list                          List your snippets
+ *   lumbung search <query>                Search snippets
+ *   lumbung config set-ai-key <key>       Simpan Gemini API Key
+ *   lumbung config show                   Tampilkan status konfigurasi
+ *   lumbung logout                        Logout from your account
  * 
  * Run 'lumbung --help' for more information.
  */
@@ -22,6 +24,7 @@ import { push } from '../src/commands/push.js'
 import { get } from '../src/commands/get.js'
 import { list } from '../src/commands/list.js'
 import { search } from '../src/commands/search.js'
+import { setAiKey, removeAiKey, showConfig } from '../src/commands/config.js'
 import { getConfig } from '../src/lib/config.js'
 import { createRequire } from 'module'
 
@@ -127,6 +130,26 @@ program
       console.log(chalk.yellow('Not logged in. Run: lumbung login'))
     }
   })
+
+// Config command (manage persisted settings)
+const configCmd = program
+  .command('config')
+  .description('Kelola konfigurasi CLI (API Key, dll.)')
+
+configCmd
+  .command('set-ai-key <key>')
+  .description('Simpan Gemini API Key ke config lokal (cukup sekali, berlaku permanen)')
+  .action(setAiKey)
+
+configCmd
+  .command('remove-ai-key')
+  .description('Hapus Gemini API Key dari config lokal')
+  .action(removeAiKey)
+
+configCmd
+  .command('show')
+  .description('Tampilkan status konfigurasi saat ini')
+  .action(showConfig)
 
 // Parse and execute
 program.parse()

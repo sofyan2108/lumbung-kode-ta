@@ -1,4 +1,4 @@
-import { X, Code2, Loader2, Tag, Wand2, Sparkles } from 'lucide-react'
+import { X, Code2, Loader2, Tag, Wand2, Sparkles, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { dracula } from '@uiw/codemirror-theme-dracula'
@@ -11,6 +11,7 @@ import LanguageSelector from './languageSelector'
 import { useShortcut } from '../hooks/useShortcut'
 import { formatCode } from '../utils/formatCode'
 import { analyzeCodeWithAI } from '../utils/AIService'
+import { validateCodeWithAI } from '../lib/gemini'
 
 export default function AddSnippetModal({ isOpen, onClose }) {
   const { addSnippet } = useSnippetStore()
@@ -20,6 +21,7 @@ export default function AddSnippetModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false) // State loading AI
   const [isFormatting, setIsFormatting] = useState(false) // State loading Format
+  const [isValidating, setIsValidating] = useState(false) // State loading AI Quality Gate
   
   // State Form
   const [title, setTitle] = useState('')
@@ -119,6 +121,52 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         return
     }
 
+    // 3. AI QUALITY GATE ─────────────────────────────────────────────
+    setIsValidating(true)
+    let finalTitle = title.trim()
+    let finalLanguage = language.toLowerCase()
+
+    try {
+      const validation = await validateCodeWithAI(code)
+
+      if (!validation.skipped) {
+        if (!validation.isValid || validation.confidenceScore < 0.7) {
+          // Konten DITOLAK — tampilkan alert dan batalkan
+          const scorePercent = Math.round(validation.confidenceScore * 100)
+          showAlert(
+            'error',
+            '🚫 AI Quality Gate: Konten Ditolak',
+            validation.reason
+              ? `${validation.reason} (Confidence: ${scorePercent}%)`
+              : `Konten tidak terdeteksi sebagai kode program yang valid. (Confidence: ${scorePercent}%)`
+          )
+          setIsValidating(false)
+          return // Batalkan upload
+        }
+
+        // Konten VALID — gunakan metadata AI jika judul/bahasa belum diisi user secara manual
+        if (validation.metadata.title && !title.trim()) {
+          finalTitle = validation.metadata.title
+          setTitle(finalTitle)
+        }
+        if (validation.metadata.language && !language.trim()) {
+          finalLanguage = validation.metadata.language
+          setLanguage(finalLanguage)
+        }
+      }
+    } catch (aiError) {
+      // Jika Gemini gagal merespons, tampilkan peringatan tapi tetap lanjutkan upload
+      console.warn('AI Quality Gate error (dilanjutkan tanpa validasi):', aiError)
+      showAlert(
+        'warning',
+        '⚠ AI Quality Gate',
+        'Validasi AI tidak tersedia saat ini. Upload dilanjutkan tanpa pengecekan AI.'
+      )
+    } finally {
+      setIsValidating(false)
+    }
+    // ── END AI QUALITY GATE ──────────────────────────────────────────
+
     setLoading(true)
     try {
       const tagsArray = tagsInput
@@ -128,8 +176,8 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         .slice(0, 5) // Batasi 5 tag
 
       await addSnippet({
-        title: title.trim(),
-        language: language.toLowerCase(),
+        title: finalTitle,
+        language: finalLanguage,
         code: code.trim(),
         description: description.trim(),
         tags: tagsArray,
@@ -164,7 +212,7 @@ export default function AddSnippetModal({ isOpen, onClose }) {
 
   // --- KEYBOARD SHORTCUTS ---
   useShortcut('s', () => {
-    if (isOpen && !loading) performSubmit()
+    if (isOpen && !loading && !isValidating) performSubmit()
   }, { ctrlKey: true })
 
   useShortcut('Escape', () => {
@@ -404,10 +452,14 @@ export default function AddSnippetModal({ isOpen, onClose }) {
           </button>
           <button 
             onClick={performSubmit}
-            disabled={loading}
-            className="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-bold shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2 hover:-translate-y-0.5 active:scale-95"
+            disabled={loading || isValidating}
+            className="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg font-bold shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {loading ? <Loader2 className="animate-spin" size={18}/> : 'Simpan'}
+            {isValidating ? (
+              <><ShieldCheck className="animate-pulse" size={18}/> Memvalidasi...</>
+            ) : loading ? (
+              <Loader2 className="animate-spin" size={18}/>
+            ) : 'Simpan'}
           </button>
         </div>
 

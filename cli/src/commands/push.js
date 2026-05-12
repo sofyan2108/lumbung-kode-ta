@@ -8,6 +8,7 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { createSnippet } from '../lib/api.js'
 import { isLoggedIn } from '../lib/config.js'
+import { validateCodeWithAI } from '../lib/gemini.js'
 
 // Extension to language mapping
 const EXTENSION_MAP = {
@@ -78,12 +79,64 @@ export async function push(file, options) {
     const usageExample = options.usageExample || options.usage || ''
     const documentationUrl = options.documentationUrl || options.docs || ''
     
-    spinner.text = 'Uploading snippet...'
-    
+    // ── AI QUALITY GATE ─────────────────────────────────────────────────────
+    spinner.text = 'Memvalidasi konten dengan AI Quality Gate...'
+
+    let aiTitle = title
+    let aiLanguage = language
+
+    try {
+      const validation = await validateCodeWithAI(code)
+
+      if (validation.skipped) {
+        // Tidak ada Gemini API Key — lewati validasi, tampilkan peringatan
+        spinner.warn(
+          chalk.yellow('⚠ AI Quality Gate dilewati (GEMINI_API_KEY tidak ditemukan).')
+        )
+      } else if (!validation.isValid || validation.confidenceScore < 0.7) {
+        // Konten DITOLAK oleh AI
+        spinner.fail(chalk.red('✗ AI Quality Gate: Konten ditolak!'))
+        console.log('')
+        console.log(chalk.red('─'.repeat(55)))
+        console.log(chalk.red.bold('  🚫 Konten Tidak Valid untuk Lumbung Kode'))
+        console.log(chalk.red('─'.repeat(55)))
+        console.log(chalk.red(`  Alasan     : ${validation.reason || 'Konten tidak terdeteksi sebagai kode program.'}`))        
+        console.log(chalk.red(`  Confidence : ${(validation.confidenceScore * 100).toFixed(0)}% (minimum 70%)`))        
+        console.log(chalk.red('─'.repeat(55)))
+        console.log('')
+        console.log(chalk.gray('  Pastikan file yang diupload berisi kode program,'))
+        console.log(chalk.gray('  file konfigurasi (JSON/YAML/Dockerfile), atau'))
+        console.log(chalk.gray('  dokumentasi teknis (Markdown dengan blok kode).'))
+        console.log('')
+        return // Batalkan upload
+      } else {
+        // Konten VALID — gunakan metadata AI jika lebih baik
+        spinner.succeed(chalk.green(`✓ AI Quality Gate: Valid (${(validation.confidenceScore * 100).toFixed(0)}% confidence)`))
+
+        // Prioritaskan metadata dari AI jika user tidak memberi flag --title / --language
+        if (!options.title && validation.metadata.title) {
+          aiTitle = validation.metadata.title
+        }
+        if (!options.language && validation.metadata.language) {
+          aiLanguage = validation.metadata.language
+        }
+      }
+    } catch (aiError) {
+      // Jika Gemini tidak bisa dihubungi, tampilkan peringatan tapi tetap lanjutkan
+      spinner.warn(chalk.yellow(`⚠ AI Quality Gate gagal (${aiError.message}). Upload dilanjutkan tanpa validasi.`))
+    }
+    // ── END AI QUALITY GATE ──────────────────────────────────────────────────
+
+    spinner.text = 'Mengunggah snippet...'
+
+    // Gunakan aiTitle / aiLanguage (bisa berasal dari AI atau dari flag user)
+    const finalTitle = aiTitle
+    const finalLanguage = aiLanguage
+
     // Create snippet
     const snippet = await createSnippet({
-      title,
-      language,
+      title: finalTitle,
+      language: finalLanguage,
       code,
       description,
       tags,
@@ -101,8 +154,8 @@ export async function push(file, options) {
     console.log(chalk.bold('📝 Snippet Details:'))
     console.log(chalk.gray('─'.repeat(50)))
     console.log(`   ${chalk.cyan('ID:')}       ${snippet.id}`)
-    console.log(`   ${chalk.cyan('Title:')}    ${snippet.title}`)
-    console.log(`   ${chalk.cyan('Language:')} ${snippet.language}`)
+    console.log(`   ${chalk.cyan('Title:')}    ${snippet.title}${aiTitle !== title ? chalk.gray(' (dari AI)') : ''}`)
+    console.log(`   ${chalk.cyan('Language:')} ${snippet.language}${aiLanguage !== language ? chalk.gray(' (dari AI)') : ''}`)
     console.log(`   ${chalk.cyan('Public:')}   ${snippet.is_public ? '🌍 Yes' : '🔒 No'}`)
     if (tags.length > 0) {
       console.log(`   ${chalk.cyan('Tags:')}     ${tags.map(t => `#${t}`).join(' ')}`)
