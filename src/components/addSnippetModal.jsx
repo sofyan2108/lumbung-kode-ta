@@ -155,13 +155,15 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         }
       }
     } catch (aiError) {
-      // Jika Gemini gagal merespons, tampilkan peringatan tapi tetap lanjutkan upload
-      console.warn('AI Quality Gate error (dilanjutkan tanpa validasi):', aiError)
+      // AI error → blokir upload dan tampilkan pesan error
+      console.error('[AI Gate] Exception di modal:', aiError)
       showAlert(
-        'warning',
-        '⚠ AI Quality Gate',
-        'Validasi AI tidak tersedia saat ini. Upload dilanjutkan tanpa pengecekan AI.'
+        'error',
+        '⚠ AI Quality Gate Tidak Tersedia',
+        `Validasi AI gagal dan upload dibatalkan untuk keamanan. Silakan coba lagi. (${aiError.message})`
       )
+      setIsValidating(false)
+      return // Batalkan upload
     } finally {
       setIsValidating(false)
     }
