@@ -7,6 +7,7 @@
  *   lumbung register                      Register a new account
  *   lumbung login                         Login to your account
  *   lumbung push <file>                   Upload a snippet from file
+ *   lumbung fetch <github-url>            Import snippet from GitHub URL
  *   lumbung get <id>                      Fetch a snippet by ID
  *   lumbung list                          List your snippets
  *   lumbung search <query>                Search snippets
@@ -24,6 +25,7 @@ import { push } from '../src/commands/push.js'
 import { get } from '../src/commands/get.js'
 import { list } from '../src/commands/list.js'
 import { search } from '../src/commands/search.js'
+import { fetchFromGitHub } from '../src/commands/fetch.js'
 import { setAiKey, removeAiKey, showConfig } from '../src/commands/config.js'
 import { getConfig } from '../src/lib/config.js'
 import { createRequire } from 'module'
@@ -89,6 +91,18 @@ program
   .option('--usage <example>', 'Usage example for the snippet')
   .option('--docs <url>', 'Documentation URL')
   .action(push)
+
+// Fetch from GitHub command
+program
+  .command('fetch <github-url>')
+  .description('Import snippet dari GitHub URL (file atau Gist)')
+  .option('-t, --title <title>', 'Judul snippet (default: nama file)')
+  .option('-l, --language <language>', 'Bahasa (auto-detect dari ekstensi file)')
+  .option('-d, --description <description>', 'Deskripsi snippet')
+  .option('--tags <tags>', 'Tag dipisah koma')
+  .option('--public', 'Jadikan snippet public', false)
+  .option('-o, --output <file>', 'Simpan ke file lokal (tanpa upload ke Lumbung)')
+  .action(fetchFromGitHub)
 
 // Get command
 program

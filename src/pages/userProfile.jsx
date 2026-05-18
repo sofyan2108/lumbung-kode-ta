@@ -5,7 +5,8 @@ import SnippetCard from '../components/snippetCard'
 import EditProfileModal from '../components/editProfileModal' // Import Modal Baru
 import { useSnippetStore } from '../store/snippetStore'
 import { useAuthStore } from '../store/authStore'
-import { Loader2, ArrowLeft, User, Code, Calendar, Globe, Edit2 } from 'lucide-react' // Tambah icon
+import { supabase } from '../lib/supabase'
+import { Loader2, ArrowLeft, User, Code, Calendar, Globe, Edit2, Star, GitFork, MessageCircle, Layers, Copy } from 'lucide-react'
 
 export default function UserProfile() {
   const { userId } = useParams()
@@ -21,11 +22,26 @@ export default function UserProfile() {
   // State Modal Edit Profil
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false)
 
+  // State Stats
+  const [userStats, setUserStats] = useState(null)
+
   useEffect(() => {
-    if (userId) {
-        fetchUserPublicProfile(userId)
-        fetchMyFavoriteIds()
+    async function loadData() {
+      if (userId) {
+          fetchUserPublicProfile(userId)
+          fetchMyFavoriteIds()
+          
+          try {
+            const { data, error } = await supabase.rpc('get_user_stats', { target_user_id: userId })
+            if (!error && data && data.length > 0) {
+              setUserStats(data[0])
+            }
+          } catch (e) {
+            console.error('Failed to fetch stats', e)
+          }
+      }
     }
+    loadData()
   }, [userId])
 
   if (loading) {
@@ -118,6 +134,43 @@ export default function UserProfile() {
                 </div>
             </div>
         </div>
+
+        {/* --- STATISTIK KONTRIBUSI --- */}
+        {userStats && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div className="bg-white dark:bg-pastel-dark-surface p-5 rounded-2xl border border-gray-100 dark:border-pastel-dark-border shadow-sm flex flex-col items-center justify-center text-center">
+              <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-full flex items-center justify-center mb-2">
+                <Layers size={20} />
+              </div>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">{userStats.total_snippets || 0}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Total Snippets</p>
+            </div>
+            
+            <div className="bg-white dark:bg-pastel-dark-surface p-5 rounded-2xl border border-gray-100 dark:border-pastel-dark-border shadow-sm flex flex-col items-center justify-center text-center">
+              <div className="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mb-2">
+                <Star size={20} />
+              </div>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">{userStats.total_likes || 0}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Total Likes</p>
+            </div>
+            
+            <div className="bg-white dark:bg-pastel-dark-surface p-5 rounded-2xl border border-gray-100 dark:border-pastel-dark-border shadow-sm flex flex-col items-center justify-center text-center">
+              <div className="w-10 h-10 bg-green-50 dark:bg-green-900/20 text-green-500 rounded-full flex items-center justify-center mb-2">
+                <Copy size={20} />
+              </div>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">{userStats.total_copies || 0}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Total Copies</p>
+            </div>
+            
+            <div className="bg-white dark:bg-pastel-dark-surface p-5 rounded-2xl border border-gray-100 dark:border-pastel-dark-border shadow-sm flex flex-col items-center justify-center text-center">
+              <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 rounded-full flex items-center justify-center mb-2">
+                <MessageCircle size={20} />
+              </div>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">{userStats.total_comments || 0}</p>
+              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Comments</p>
+            </div>
+          </div>
+        )}
 
         {/* --- PUBLIC SNIPPETS GRID --- */}
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 pl-2 border-l-4 border-pink-500">

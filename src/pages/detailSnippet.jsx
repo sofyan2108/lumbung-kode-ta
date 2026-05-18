@@ -13,6 +13,7 @@ import { getLanguageExtension, getLangColor, getFileExtension } from '../utils/l
 import LanguageSelector from '../components/languageSelector'
 import { formatCode } from '../utils/formatCode'
 import { analyzeCodeWithAI } from '../utils/AIService'
+import CommentSection from '../components/commentSection'
 
 export default function DetailSnippet() {
   const { id } = useParams()
@@ -572,6 +573,9 @@ export default function DetailSnippet() {
         </div>
         
         </form>
+
+        {/* COMMENT SECTION */}
+        <CommentSection snippetId={snippet.id} isPublic={snippet.is_public} />
 
       </div>
 

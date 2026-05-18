@@ -1,4 +1,4 @@
-import { X, Code2, Loader2, Tag, Wand2, Sparkles, ShieldCheck } from 'lucide-react'
+import { X, Code2, Loader2, Tag, Wand2, Sparkles, ShieldCheck, Github, Link, ArrowDownToLine, Check } from 'lucide-react'
 import { useState } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { dracula } from '@uiw/codemirror-theme-dracula'
@@ -12,6 +12,7 @@ import { useShortcut } from '../hooks/useShortcut'
 import { formatCode } from '../utils/formatCode'
 import { analyzeCodeWithAI } from '../utils/AIService'
 import { validateCodeWithAI } from '../lib/gemini'
+import { fetchGitHubFile, isGitHubUrl } from '../utils/githubFetch'
 
 export default function AddSnippetModal({ isOpen, onClose }) {
   const { addSnippet } = useSnippetStore()
@@ -22,6 +23,10 @@ export default function AddSnippetModal({ isOpen, onClose }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false) // State loading AI
   const [isFormatting, setIsFormatting] = useState(false) // State loading Format
   const [isValidating, setIsValidating] = useState(false) // State loading AI Quality Gate
+  const [isFetchingGH, setIsFetchingGH] = useState(false) // State loading GitHub fetch
+  const [ghUrl, setGhUrl] = useState('') // GitHub URL input
+  const [ghImported, setGhImported] = useState(false) // Menandakan sudah import dari GitHub
+  const [showGhImport, setShowGhImport] = useState(false) // Toggle panel GitHub import
   
   // State Form
   const [title, setTitle] = useState('')
@@ -41,6 +46,38 @@ export default function AddSnippetModal({ isOpen, onClose }) {
   const MAX_TITLE_LENGTH = 100
   const MAX_CODE_LENGTH = 20000
   const MAX_DESC_LENGTH = 500
+
+  // --- LOGIKA GITHUB FETCH ---
+  const handleGitHubFetch = async () => {
+    if (!ghUrl.trim()) {
+      showAlert('error', 'URL Kosong', 'Masukkan link GitHub terlebih dahulu.')
+      return
+    }
+
+    if (!isGitHubUrl(ghUrl)) {
+      showAlert('error', 'URL Tidak Valid', 'Gunakan link file dari GitHub (github.com/.../blob/...) atau Gist.')
+      return
+    }
+
+    setIsFetchingGH(true)
+    try {
+      const result = await fetchGitHubFile(ghUrl)
+      
+      // Auto-fill form
+      setCode(result.code)
+      setLanguage(result.language)
+      setTitle(result.filename.replace(/\.[^/.]+$/, '')) // Hapus ekstensi untuk judul
+      setDocumentationUrl(result.sourceUrl)
+      setGhImported(true)
+      
+      showAlert('success', 'Import Berhasil!', `File "${result.filename}" dari ${result.repoInfo} berhasil diimpor.`)
+    } catch (error) {
+      console.error(error)
+      showAlert('error', 'Gagal Import', error.message || 'Terjadi kesalahan saat mengambil file dari GitHub.')
+    } finally {
+      setIsFetchingGH(false)
+    }
+  }
 
   // --- LOGIKA AI (GEMINI) ---
   const handleAnalyzeCode = async () => {
@@ -202,6 +239,10 @@ export default function AddSnippetModal({ isOpen, onClose }) {
       setDependencyInput('')
       setUsageExample('')
       setDocumentationUrl('')
+      // Reset GitHub import
+      setGhUrl('')
+      setGhImported(false)
+      setShowGhImport(false)
       
       onClose()
       showAlert('success', 'Tersimpan!', 'Snippet baru berhasil ditambahkan.')
@@ -252,6 +293,60 @@ export default function AddSnippetModal({ isOpen, onClose }) {
         {/* Body Form */}
         <div className="p-6 overflow-y-auto custom-scrollbar space-y-6">
           
+            {/* 0. GITHUB IMPORT SECTION */}
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowGhImport(!showGhImport)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-[#1a1f2e] dark:to-[#252a36] text-white rounded-xl hover:brightness-110 transition group"
+              >
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <Github size={18} className="text-white" />
+                  Import dari GitHub
+                  {ghImported && <Check size={14} className="text-green-400" />}
+                </span>
+                <span className={`text-gray-400 text-xs transition-transform duration-200 ${showGhImport ? 'rotate-180' : ''}`}>
+                  ▼
+                </span>
+              </button>
+
+              {showGhImport && (
+                <div className="mt-3 p-4 bg-gray-50 dark:bg-[#1a1f2e] border border-gray-200 dark:border-gray-700 rounded-xl space-y-3 animate-in slide-in-from-top-2 duration-200">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Paste link file GitHub atau Gist — kode akan diambil otomatis.
+                  </p>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Link className="absolute left-3 top-2.5 text-gray-400" size={16} />
+                      <input
+                        type="url"
+                        value={ghUrl}
+                        onChange={(e) => { setGhUrl(e.target.value); setGhImported(false) }}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleGitHubFetch() } }}
+                        className="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#252a33] border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gray-500/50 dark:text-white focus:outline-none transition placeholder-gray-400 text-sm"
+                        placeholder="https://github.com/user/repo/blob/main/file.js"
+                        disabled={isFetchingGH}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleGitHubFetch}
+                      disabled={isFetchingGH || !ghUrl.trim()}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white/10 text-white rounded-xl text-sm font-bold hover:bg-gray-700 dark:hover:bg-white/20 transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      {isFetchingGH ? <Loader2 className="animate-spin" size={16} /> : <ArrowDownToLine size={16} />}
+                      {isFetchingGH ? 'Mengambil...' : 'Import'}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <span className="text-[10px] px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">github.com/.../blob/...</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">raw.githubusercontent.com/...</span>
+                    <span className="text-[10px] px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">gist.github.com/...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* 1. SECTION EDITOR KODE (Code-First) */}
             <div>
               <label className="text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2 block">1. Masukkan Kode</label>

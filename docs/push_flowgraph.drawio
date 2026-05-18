@@ -1,0 +1,310 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram id="push-flow" name="push() Flow Graph [V(G)=10]">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== NODES ===== -->
+
+        <!-- N1: Start -->
+        <mxCell id="N1" value="&lt;b&gt;1. START&lt;/b&gt;&lt;br/&gt;push(file, options)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="20" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- N2: Cek Login -->
+        <mxCell id="N2" value="&lt;b&gt;2. Cek Autentikasi&lt;/b&gt;&lt;br/&gt;isLoggedIn()?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="120" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- N3: Login Error -->
+        <mxCell id="N3" value="&lt;b&gt;3. Error: Belum Login&lt;/b&gt;&lt;br/&gt;console.log(&apos;Not logged in&apos;)&lt;br/&gt;&lt;font color=&apos;#b85450&apos;&gt;→ return&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N4: Cek File -->
+        <mxCell id="N4" value="&lt;b&gt;4. Cek File&lt;/b&gt;&lt;br/&gt;fs.existsSync(file)?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="270" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- N5: File Error -->
+        <mxCell id="N5" value="&lt;b&gt;5. Error: File Tidak Ada&lt;/b&gt;&lt;br/&gt;console.log(&apos;File not found&apos;)&lt;br/&gt;&lt;font color=&apos;#b85450&apos;&gt;→ return&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="290" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N6: Cek Kosong -->
+        <mxCell id="N6" value="&lt;b&gt;6. File Kosong?&lt;/b&gt;&lt;br/&gt;code.trim() === &apos;&apos;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="420" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- N7: Empty Error -->
+        <mxCell id="N7" value="&lt;b&gt;7. Error: File Kosong&lt;/b&gt;&lt;br/&gt;spinner.fail(&apos;File is empty&apos;)&lt;br/&gt;&lt;font color=&apos;#b85450&apos;&gt;→ return&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="440" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N9: AI Skipped? -->
+        <mxCell id="N9" value="&lt;b&gt;9. AI Dilewati?&lt;/b&gt;&lt;br/&gt;validation.skipped == true?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="570" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- N10: Warn Skip -->
+        <mxCell id="N10" value="&lt;b&gt;10. Peringatan: AI Dilewati&lt;/b&gt;&lt;br/&gt;spinner.warn(&apos;API Key tidak ditemukan&apos;)&lt;br/&gt;&lt;font color=&apos;#6d8764&apos;&gt;→ lanjut upload&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="730" y="590" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N11: AI Invalid? -->
+        <mxCell id="N11" value="&lt;b&gt;11. Konten Ditolak AI?&lt;/b&gt;&lt;br/&gt;!isValid || score &lt; 0.7?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="720" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- N12: AI Rejected -->
+        <mxCell id="N12" value="&lt;b&gt;12. Upload Dibatalkan&lt;/b&gt;&lt;br/&gt;spinner.fail(&apos;Konten ditolak!&apos;)&lt;br/&gt;Tampilkan alasan penolakan&lt;br/&gt;&lt;font color=&apos;#b85450&apos;&gt;→ return&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="740" width="240" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- N13: AI Valid -->
+        <mxCell id="N13" value="&lt;b&gt;13. Konten Valid&lt;/b&gt;&lt;br/&gt;spinner.succeed(&apos;AI: Valid (XX% confidence)&apos;)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="730" y="740" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N16: Catch AI Error -->
+        <mxCell id="N16" value="&lt;b&gt;16. Tangkap Error AI&lt;/b&gt;&lt;br/&gt;catch (aiError)&lt;br/&gt;Blok try-catch inner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="590" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N17: Warn AI Error -->
+        <mxCell id="N17" value="&lt;b&gt;17. Peringatan Error AI&lt;/b&gt;&lt;br/&gt;spinner.warn(&apos;AI gagal, upload dilanjutkan&apos;)&lt;br/&gt;&lt;font color=&apos;#6d8764&apos;&gt;→ graceful degradation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="700" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N14: Override Metadata? -->
+        <mxCell id="N14" value="&lt;b&gt;14. Override Metadata?&lt;/b&gt;&lt;br/&gt;!options.title &amp;&amp;&lt;br/&gt;validation.metadata.title ada?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="430" y="870" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- N15: Update Metadata -->
+        <mxCell id="N15" value="&lt;b&gt;15. Update Metadata dari AI&lt;/b&gt;&lt;br/&gt;aiTitle = validation.metadata.title&lt;br/&gt;aiLanguage = validation.metadata.language" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="730" y="890" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N18: createSnippet -->
+        <mxCell id="N18" value="&lt;b&gt;18. Upload ke Server&lt;/b&gt;&lt;br/&gt;await createSnippet({ title, language, code,&lt;br/&gt;description, tags, is_public, ... })" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1040" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N19: Success -->
+        <mxCell id="N19" value="&lt;b&gt;19. Upload Berhasil&lt;/b&gt;&lt;br/&gt;spinner.succeed(&apos;Snippet uploaded!&apos;)&lt;br/&gt;Tampilkan detail snippet (ID, Title, URL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1150" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N20: Catch API Error -->
+        <mxCell id="N20" value="&lt;b&gt;20. Tangkap Error API&lt;/b&gt;&lt;br/&gt;catch (error)&lt;br/&gt;Blok try-catch outer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1040" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N21: Fail -->
+        <mxCell id="N21" value="&lt;b&gt;21. Upload Gagal&lt;/b&gt;&lt;br/&gt;spinner.fail(&apos;Failed to upload snippet&apos;)&lt;br/&gt;console.log(error.message)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="1150" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- N22: End -->
+        <mxCell id="N22" value="&lt;b&gt;22. END&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1270" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EDGES ===== -->
+
+        <!-- N1 → N2 -->
+        <mxCell id="E1" style="endArrow=block;endFill=1;html=1;" edge="1" source="N1" target="N2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N2 → N3 (false: belum login) -->
+        <mxCell id="E2" value="false&lt;br/&gt;Belum Login" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N2" target="N3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N2 → N4 (true: sudah login) -->
+        <mxCell id="E3" value="true&lt;br/&gt;Sudah Login" style="endArrow=block;endFill=1;html=1;" edge="1" source="N2" target="N4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N3 → N22 -->
+        <mxCell id="E4" style="endArrow=block;endFill=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N3" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="1300" />
+              <mxPoint x="550" y="1300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N4 → N5 (false: file tidak ada) -->
+        <mxCell id="E5" value="false&lt;br/&gt;File Tidak Ada" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N4" target="N5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N4 → N6 (true: file ada) -->
+        <mxCell id="E6" value="true&lt;br/&gt;File Ada" style="endArrow=block;endFill=1;html=1;" edge="1" source="N4" target="N6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N5 → N22 -->
+        <mxCell id="E7" style="endArrow=block;endFill=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N5" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="1300" />
+              <mxPoint x="550" y="1300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N6 → N7 (true: kosong) -->
+        <mxCell id="E8" value="true&lt;br/&gt;File Kosong" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N6" target="N7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N6 → N9 (false: ada isi) -->
+        <mxCell id="E9" value="false&lt;br/&gt;Ada Isi Kode" style="endArrow=block;endFill=1;html=1;" edge="1" source="N6" target="N9" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N7 → N22 -->
+        <mxCell id="E10" style="endArrow=block;endFill=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N7" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="1300" />
+              <mxPoint x="550" y="1300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N9 → N10 (true: API key tidak ada) -->
+        <mxCell id="E11" value="true&lt;br/&gt;API Key Tidak Ada" style="endArrow=block;endFill=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N9" target="N10" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N9 → N11 (false: ada key) -->
+        <mxCell id="E12" value="false&lt;br/&gt;Ada API Key" style="endArrow=block;endFill=1;html=1;" edge="1" source="N9" target="N11" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N9 --exception--> N16 -->
+        <mxCell id="E13" value="exception&lt;br/&gt;(try-catch)" style="endArrow=block;endFill=1;html=1;dashed=1;exitX=1;exitY=0;exitDx=0;exitDy=0;" edge="1" source="N9" target="N16" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N10 → N18 -->
+        <mxCell id="E14" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N10" target="N18" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="1010" />
+              <mxPoint x="550" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N11 → N12 (true: ditolak) -->
+        <mxCell id="E15" value="true&lt;br/&gt;Konten Ditolak / Score &lt; 70%" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N11" target="N12" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N11 → N13 (false: diterima) -->
+        <mxCell id="E16" value="false&lt;br/&gt;Konten Valid / Score ≥ 70%" style="endArrow=block;endFill=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N11" target="N13" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N12 → N22 -->
+        <mxCell id="E17" style="endArrow=block;endFill=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N12" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="1300" />
+              <mxPoint x="550" y="1300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N13 → N14 -->
+        <mxCell id="E18" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N13" target="N14" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="840" />
+              <mxPoint x="550" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N14 → N15 (true: ada metadata AI) -->
+        <mxCell id="E19" value="true&lt;br/&gt;Ada Metadata AI" style="endArrow=block;endFill=1;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N14" target="N15" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N14 → N18 (false: tidak override) -->
+        <mxCell id="E20" value="false&lt;br/&gt;Gunakan Input User" style="endArrow=block;endFill=1;html=1;" edge="1" source="N14" target="N18" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N15 → N18 -->
+        <mxCell id="E21" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N15" target="N18" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="1010" />
+              <mxPoint x="550" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N16 → N17 -->
+        <mxCell id="E22" style="endArrow=block;endFill=1;html=1;" edge="1" source="N16" target="N17" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N17 → N18 -->
+        <mxCell id="E23" style="endArrow=block;endFill=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N17" target="N18" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1170" y="1010" />
+              <mxPoint x="550" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- N18 → N19 -->
+        <mxCell id="E24" style="endArrow=block;endFill=1;html=1;" edge="1" source="N18" target="N19" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N18 --exception--> N20 -->
+        <mxCell id="E25" value="exception&lt;br/&gt;(try-catch)" style="endArrow=block;endFill=1;html=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="N18" target="N20" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N19 → N22 -->
+        <mxCell id="E26" style="endArrow=block;endFill=1;html=1;" edge="1" source="N19" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N20 → N21 -->
+        <mxCell id="E27" style="endArrow=block;endFill=1;html=1;" edge="1" source="N20" target="N21" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- N21 → N22 -->
+        <mxCell id="E28" style="endArrow=block;endFill=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="N21" target="N22" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="870" y="1270" />
+              <mxPoint x="550" y="1270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== LEGEND ===== -->
+        <mxCell id="LG" value="&lt;b&gt;LEGENDA&lt;/b&gt;&lt;br/&gt;🔵 Start / End&lt;br/&gt;🟡 Percabangan (if/else)&lt;br/&gt;🔴 Error / Return awal&lt;br/&gt;🟢 Proses sukses&lt;br/&gt;🟠 Penanganan error AI&lt;br/&gt;⬜ Proses normal&lt;br/&gt;--- Panah putus = Exception (try-catch)" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;fontColor=#333333;fontSize=11;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="860" width="260" height="160" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

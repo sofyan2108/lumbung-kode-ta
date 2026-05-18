@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom'
-import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X, Folder, ChevronDown, ChevronRight, Terminal } from 'lucide-react'
+import { LayoutGrid, Globe, LogOut, PlusCircle, Code, LogIn, X, Folder, ChevronDown, ChevronRight, Terminal, Trophy } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useAlertStore } from '../store/alertStore'
 import { useCollectionStore } from '../store/collectionStore'
@@ -26,6 +26,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
   const menus = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutGrid },
     { name: 'Explore', path: '/explore', icon: Globe },
+    { name: 'Leaderboard', path: '/leaderboard', icon: Trophy },
     { name: 'CLI Docs', path: '/cli-docs', icon: Terminal },
   ]
 
@@ -123,9 +124,9 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
           {user && (
             <>
               <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button
+                <div
                   onClick={() => setCollectionsExpanded(!collectionsExpanded)}
-                  className="w-full flex items-center justify-between px-4 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-2 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
                 >
                   <span>Collections</span>
                   <div className="flex items-center gap-2">
@@ -141,7 +142,7 @@ export default function Sidebar({ onOpenModal, isOpen, onClose, onSelectCollecti
                     </button>
                     {collectionsExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                   </div>
-                </button>
+                </div>
 
                 {collectionsExpanded && (
                   <div className="space-y-1 mt-2 max-h-64 overflow-y-auto custom-scrollbar">

@@ -244,6 +244,29 @@ function CommandsSection() {
         />
       </div>
 
+      {/* Import */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
+          <Download size={18} /> Import dari GitHub
+        </h3>
+        <CommandCard
+          icon={Terminal}
+          title="lumbung fetch <github-url>"
+          description="Import snippet langsung dari link file GitHub atau Gist. Otomatis mengisi kode, nama file, dan link sumber dokumentasi."
+          command={`lumbung fetch https://github.com/user/repo/blob/main/utils.js \\
+  --title "Utility Helper" \\
+  --public`}
+          options={[
+            { option: '--title <text>', alias: '-t', desc: 'Judul (default: nama file)' },
+            { option: '--description <text>', alias: '-d', desc: 'Deskripsi snippet' },
+            { option: '--language <lang>', alias: '-l', desc: 'Bahasa pemrograman' },
+            { option: '--tags <tags>', alias: '', desc: 'Tags (pisah koma)' },
+            { option: '--public', alias: '', desc: 'Buat public' },
+            { option: '--output <file>', alias: '-o', desc: 'Simpan ke file lokal (tanpa upload)' },
+          ]}
+        />
+      </div>
+
       {/* Download */}
       <div className="space-y-4">
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
@@ -318,6 +341,15 @@ lumbung push src/components/Header.jsx \\
   --tags "react,component,responsive,darkmode" \\
   --dependencies '["react","lucide-react"]' \\
   --public`
+    },
+    {
+      title: 'Import dari GitHub',
+      desc: 'Fetch kode dari repo public dan simpan ke akun Lumbung',
+      code: `# Import file GitHub langsung jadi snippet public
+lumbung fetch https://github.com/facebook/react/blob/main/packages/react/index.js --public
+
+# Download Gist ke file lokal (tanpa simpan ke Lumbung)
+lumbung fetch https://gist.github.com/user/123xyz --output gist.js`
     },
     {
       title: 'Cari & Download Snippet',
@@ -542,7 +574,7 @@ export default function CliDocs() {
               className="flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-medium transition"
             >
               <Package size={16} />
-              v2.0.1
+              v2.1.2
               <ExternalLink size={14} />
             </a>
           </div>

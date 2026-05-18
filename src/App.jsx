@@ -14,6 +14,7 @@ const UserProfile = lazy(() => import('./pages/userProfile'))
 const NotFound = lazy(() => import('./pages/notFound'))
 const LandingPage = lazy(() => import('./pages/landingPage'))
 const CliDocs = lazy(() => import('./pages/cliDocs'))
+const Leaderboard = lazy(() => import('./pages/leaderboard'))
 
 function LoadingFallback() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/user/:userId" element={<UserProfile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cli-docs" element={<CliDocs />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           
           {/* ROUTE 404 (WAJIB DI PALING BAWAH) */}
           <Route path="*" element={<NotFound />} />
